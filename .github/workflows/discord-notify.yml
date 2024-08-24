@@ -17,9 +17,9 @@ jobs:
       run: |
         REPO_NAME=$(basename ${{ github.repository }})
         curl -X POST -H "Content-Type: application/json" \
-        -d "$(jq -n --arg content "---\nChanges in **$REPO_NAME**
+        -d "$(jq -n --arg content "Changes in **$REPO_NAME**
         **Commit by:** ${{ github.actor }}
         **Message:** ${{ github.event.head_commit.message }}
-        **[View Commit](${{ github.event.head_commit.url }})**\n---" \
+        **[View Commit](${{ github.event.head_commit.url }})**" \
         '{"content":$content}')" \
         ${{ secrets.DISCORD_WEBHOOK_URL }}
