@@ -16,6 +16,6 @@ jobs:
     - name: Send Discord notification
       run: |
         curl -X POST -H "Content-Type: application/json" \
-        -d "{\"content\": \"A new update has been pushed to the repository!\"}" \
+        -d "$(jq -n --arg content "Changes in **${{ github.repository }}**\n**Commit by:** ${{ github.actor }}\n**Message:** ${{ github.event.head_commit.message }}\n**[View Commit](${{ github.event.head_commit.url }})**" \
+        '{"content":$content}')" \
         ${{ secrets.DISCORD_WEBHOOK_URL }}
-
