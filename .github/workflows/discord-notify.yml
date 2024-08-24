@@ -1,0 +1,21 @@
+name: Notify Discord on Push or Merge
+
+on:
+  push:
+    branches:
+      - main
+      - 'release/*'
+  pull_request:
+    types: [closed]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Send Discord notification
+      run: |
+        curl -X POST -H "Content-Type: application/json" \
+        -d "{\"content\": \"A new update has been pushed to the repository!\"}" \
+        ${{ secrets.DISCORD_WEBHOOK_URL }}
+
