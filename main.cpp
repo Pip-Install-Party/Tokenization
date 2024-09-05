@@ -4,12 +4,12 @@
 #include <vector>
 
 const std::vector<std::string> tests = {
-    "programming_assignment_1-test_file_1.c",
-    "programming_assignment_1-test_file_2.c",
-    "programming_assignment_1-test_file_3.c",
-    "programming_assignment_1-test_file_4.c",
-    "programming_assignment_1-test_file_5.c",
-    "programming_assignment_1-test_file_6.c"
+    "tests/programming_assignment_1-test_file_1.c",
+    "tests/programming_assignment_1-test_file_2.c",
+    "tests/programming_assignment_1-test_file_3.c",
+    "tests/programming_assignment_1-test_file_4.c",
+    "tests/programming_assignment_1-test_file_5.c",
+    "tests/programming_assignment_1-test_file_6.c"
 };
 
 int main() {
