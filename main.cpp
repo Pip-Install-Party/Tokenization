@@ -1,7 +1,31 @@
-// main.cpp
-// Created on 29 August 2024 by Blake Marshall
-
 #include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
 
-int main (){
+const std::vector<std::string> tests = {
+    "programming_assignment_1-test_file_1.c",
+    "programming_assignment_1-test_file_2.c",
+    "programming_assignment_1-test_file_3.c",
+    "programming_assignment_1-test_file_4.c",
+    "programming_assignment_1-test_file_5.c",
+    "programming_assignment_1-test_file_6.c"
+};
+
+int main() {
+    for (int i = 0; i < tests.size(); i++){
+        
+        std::ifstream file(tests[i]);
+        if (!file.is_open()) {
+            std::cerr << "Error: Could not open the file " << tests[i] << std::endl;
+            return 1;
+        }
+        std::string line;
+        while (std::getline(file, line)) {
+            std::cout << line << std::endl;
+        }
+        file.close();
+    }
+
+    return 0;
 }
