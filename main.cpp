@@ -9,7 +9,9 @@ void state1(std::ifstream& file, int& lineCount);  // Detected '/', checking if 
 void state2(std::ifstream& file, int& lineCount);  // Inside a C++-style comment, ignore until newline
 bool state3(std::ifstream& file, int& lineCount, int& commentLineCount);  // Inside a C-style block comment
 bool state4(std::ifstream& file, int& lineCount, int& commentLineCount);  // Checking for end of C-style block comment
-bool state5(std::ifstream& file, int& lineCount, int& quoteLinecount);  // Inside a C++-style comment, ignore until newline
+bool state5(std::ifstream& file, int& lineCount, int& quoteLinecount);  
+bool state6(std::ifstream& file, int& lineCount);  // Detected Asterisk, check if unterminated comment
+
 // Vector holding the file paths for test files
 const std::vector<std::string> tests = {
    "Tests/programming_assignment_1-test_file_1.c",
@@ -28,6 +30,12 @@ void state0(std::ifstream& file, int& lineCount) {
         return;  // End of input, stop the function
     } else if (ch == '/') {  // If the character is '/', move to state1
         return state1(file, lineCount);
+    } else if (ch == '*'){
+        if(!state6(file, lineCount)) {
+            std::cout << "ERROR: Program contains C-style, unterminated quote on line " << lineCount;
+            exit(1);
+        }
+        return;
     } else if (ch == '"') {
         int quoteLineCount = 0;
         std::cout << ch;
@@ -126,6 +134,18 @@ bool state5(std::ifstream& file, int& lineCount, int& quoteLineCount) {
     } else {  
         std::cout << ch;
         return state5(file, lineCount, quoteLineCount);
+    }
+}
+
+bool state6(std::ifstream& file, int& lineCount) {
+    char ch; 
+    file.get(ch);  
+    if (ch == '/') { 
+        return false;
+    } else {  
+        file.putback(ch);
+        state0(file, lineCount);
+        return true;
     }
 }
 
