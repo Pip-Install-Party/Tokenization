@@ -9,7 +9,7 @@ void state1(std::ifstream& file, int& lineCount);  // Detected '/', checking if 
 void state2(std::ifstream& file, int& lineCount);  // Inside a C++-style comment, ignore until newline
 bool state3(std::ifstream& file, int& lineCount, int& commentLineCount);  // Inside a C-style block comment
 bool state4(std::ifstream& file, int& lineCount, int& commentLineCount);  // Checking for end of C-style block comment
-bool state5(std::ifstream& file, int& lineCount, int& quoteLinecount);  
+bool state5(std::ifstream& file, int& lineCount, int& quoteLinecount); // Inside a quoted string, skip over characters until end of quote  
 bool state6(std::ifstream& file, int& lineCount);  // Detected Asterisk, check if unterminated comment
 
 // Vector holding the file paths for test files
@@ -121,34 +121,39 @@ bool state4(std::ifstream& file, int& lineCount, int& commentLineCount) {
     return state3(file, lineCount, commentLineCount);  // Otherwise, continue checking inside the block comment
 }
 
+// State 5: Inside a quoted string (either single or double quotes), 
+// ignore characters inside until the closing quote is found
 bool state5(std::ifstream& file, int& lineCount, int& quoteLineCount) {
     char ch; 
     file.get(ch);  
-    if (file.eof()) { 
+    if (file.eof()) { // If end of file is reached, return false
         return false;
-    } else if (ch == '"') { 
-        std::cout << ch;
-        lineCount += quoteLineCount;
-        state0(file, lineCount);
-        return true;
+    } else if (ch == '"') { // If a closing quote is found, return to state 0
+        std::cout << ch; // Output the character
+        lineCount += quoteLineCount; // Increment the line counter
+        state0(file, lineCount); // Go back to state 0
+        return true; // And finally return true
     } else {  
-        std::cout << ch;
+        std::cout << ch; // Otherwise, go to state 5
         return state5(file, lineCount, quoteLineCount);
     }
 }
 
+// State 6: Detected an asterisk ('*') inside a comment,
+// check if it's an unterminated C-style block comment
 bool state6(std::ifstream& file, int& lineCount) {
     char ch; 
     file.get(ch);  
-    if (ch == '/') { 
+    if (ch == '/') { // If a slash is found, return false
         return false;
     } else {  
-        file.putback(ch);
-        state0(file, lineCount);
-        return true;
+        file.putback(ch); // Otherwise, put the character back
+        state0(file, lineCount); // Go to state 0
+        return true; // And return true
     }
 }
 
+// Main program function that handles user prompt, file opening/closing, and initial state
 int main() {
     char ch;
     int filenum;
