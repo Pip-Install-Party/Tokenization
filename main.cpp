@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <filesystem>
 
 // Function prototypes for the different DFA states
 void state0(std::ifstream& file, int& lineCount);  // Normal state, reading code
@@ -13,7 +14,7 @@ bool state5(std::ifstream& file, int& lineCount, int& quoteLinecount); // Inside
 bool state6(std::ifstream& file, int& lineCount);  // Detected Asterisk, check if unterminated comment
 
 // Vector holding the file paths for test files
-const std::vector<std::string> tests = {
+const std::__fs::filesystem::path tests[] = {
    "Tests/programming_assignment_1-test_file_1.c",
    "Tests/programming_assignment_1-test_file_2.c",
    "Tests/programming_assignment_1-test_file_3.c",
