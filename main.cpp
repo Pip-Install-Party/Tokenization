@@ -151,7 +151,7 @@ bool state5(std::ifstream& file, int& lineCount, int& quoteLineCount) {
     }
 }
 
-// State 6: Detected an asterisk ('*') following a slash ('/'),
+// State 6: Detected an asterisk ('*'),
 // check if it's an unterminated C-style block comment
 bool state6(std::ifstream& file, int& lineCount) {
     char ch; 
