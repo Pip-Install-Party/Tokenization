@@ -6,7 +6,7 @@ on:
       - main
       - 'release/*'
   pull_request:
-    types: [closed]
+    types: [closed, opened]
 
 jobs:
   notify:
@@ -16,10 +16,24 @@ jobs:
     - name: Send Discord notification
       run: |
         REPO_NAME=$(basename ${{ github.repository }})
-        curl -X POST -H "Content-Type: application/json" \
-        -d "$(jq -n --arg content "Changes in **$REPO_NAME**
-        **Commit by:** ${{ github.actor }}
-        **Message:** ${{ github.event.head_commit.message }}
-        **[View Commit](${{ github.event.head_commit.url }})**" \
-        '{"content":$content}')" \
-        ${{ secrets.DISCORD_WEBHOOK_URL }}
+        if [[ ${{ github.event_name }} == "push" ]]; then
+          # Notify on push
+          curl -X POST -H "Content-Type: application/json" \
+          -d "$(jq -n --arg content "Changes in **$REPO_NAME**
+          **Commit by:** ${{ github.actor }}
+          **Message:** ${{ github.event.head_commit.message }}
+          **[View Commit](${{ github.event.head_commit.url }})**" \
+          '{"content":$content}')" \
+          ${{ secrets.DISCORD_WEBHOOK_URL }}
+        elif [[ ${{ github.event_name }} == "pull_request" ]]; then
+          # Notify on pull request open/close
+          ACTION=${{ github.event.action }}
+          PR_TITLE=${{ github.event.pull_request.title }}
+          PR_URL=${{ github.event.pull_request.html_url }}
+          curl -X POST -H "Content-Type: application/json" \
+          -d "$(jq -n --arg content "Pull Request **$PR_TITLE** in **$REPO_NAME**
+          **Action:** $ACTION by ${{ github.actor }}
+          **[View Pull Request]($PR_URL)**" \
+          '{"content":$content}')" \
+          ${{ secrets.DISCORD_WEBHOOK_URL }}
+        fi

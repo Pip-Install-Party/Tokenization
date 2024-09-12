@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <filesystem>
 
 // Function prototypes for the different DFA states
 void state0(std::ifstream& file, int& lineCount);  // Normal state, reading code
@@ -13,7 +14,7 @@ bool state5(std::ifstream& file, int& lineCount, int& quoteLinecount); // Inside
 bool state6(std::ifstream& file, int& lineCount);  // Detected Asterisk, check if unterminated comment
 
 // Vector holding the file paths for test files
-const std::vector<std::string> tests = {
+const std::__fs::filesystem::path tests[] = {
    "Tests/programming_assignment_1-test_file_1.c",
    "Tests/programming_assignment_1-test_file_2.c",
    "Tests/programming_assignment_1-test_file_3.c",
@@ -27,6 +28,7 @@ void state0(std::ifstream& file, int& lineCount) {
     char ch; 
     file.get(ch);  // Read a character from the file
     if (file.eof()) {  // Check if the end of file is reached
+        std::cout << "\n";
         return;  // End of input, stop the function
     } else if (ch == '/') {  // If the character is '/', move to state1
         return state1(file, lineCount);
@@ -60,9 +62,11 @@ void state1(std::ifstream& file, int& lineCount) {
     if (file.eof()) {  // Check for end of file
         return; 
     } else if (ch == '/') {  // If it's another '/', we have a C++-style comment, move to state2
+        std::cout << "  "; // Add whitespace
         return state2(file, lineCount);
     } else if (ch == '*') {  // If it's a '*', we have a C-style block comment, move to state3
         int commentLineCount = 0;
+            std::cout << "  "; // Add whitespace
         if (!state3(file, lineCount, commentLineCount)) {
             std::cout << "ERROR: Program contains C-style, unterminated comment on line " << lineCount;
             exit(0);
@@ -84,7 +88,10 @@ void state2(std::ifstream& file, int& lineCount) {
     file.get(ch);  // Read the next character
     if (ch == '\n') {  // If it's a newline, return to state0 to process the next line
         lineCount++;
+        std::cout << "\n"; // Add newline
         return state0(file, lineCount);
+    } else {
+        std::cout << " "; // Add whitespace
     }
     return state2(file, lineCount);  // Otherwise, stay in state2, ignoring characters
 }
@@ -96,9 +103,12 @@ bool state3(std::ifstream& file, int& lineCount, int& commentLineCount) {
     if (ch == '*') {  // If it's a '*', check if it's the start of '*/' (end of comment)
         return state4(file, lineCount, commentLineCount);
     } else if (ch == '\n') {
+        std::cout << "\n"; // Add newline
         commentLineCount++;
     }else if (file.eof()){
        return false;
+    } else {
+         std::cout << " "; // Add whitespace
     }
     return state3(file, lineCount, commentLineCount);  // Otherwise, stay in state3, ignoring characters
 }
@@ -108,16 +118,19 @@ bool state4(std::ifstream& file, int& lineCount, int& commentLineCount) {
     char ch; 
     file.get(ch);  // Read the next character
     if (ch == '/') {  // If it's '/', the block comment is closed, return to state0
+        std::cout << "  "; // Add whitespace
         lineCount += commentLineCount; 
         state0(file, lineCount);
         return true;
     } else if (ch == '\n') {
+        std::cout << "\n"; // Add newline
         commentLineCount++;
     } else if (file.eof()){
        return false;
     } else if (ch == '*') {
         file.putback(ch);
     }
+    std::cout << " "; // Add whitespace
     return state3(file, lineCount, commentLineCount);  // Otherwise, continue checking inside the block comment
 }
 
@@ -139,7 +152,7 @@ bool state5(std::ifstream& file, int& lineCount, int& quoteLineCount) {
     }
 }
 
-// State 6: Detected an asterisk ('*') inside a comment,
+// State 6: Detected an asterisk ('*'),
 // check if it's an unterminated C-style block comment
 bool state6(std::ifstream& file, int& lineCount) {
     char ch; 
@@ -166,8 +179,10 @@ int main() {
    		"Type 3 for programming_assignment_1-test_file_3.c\n"
    		"Type 4 for programming_assignment_1-test_file_4.c\n"
    		"Type 5 for programming_assignment_1-test_file_5.c\n"
-   		"Type 6 for programming_assignment_1-test_file_6.c\n";
+   		"Type 6 for programming_assignment_1-test_file_6.c\n"
+        "Selection: ";
     std::cin >> filenum;
+    std::cout << "\nResulting File:" << std::endl;
 	filenum -= 1;
 
 
