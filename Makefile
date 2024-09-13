@@ -1,10 +1,11 @@
+tokenize.x: main.o commentDFA.o
+	g++ -std=c++17 -g main.o commentDFA.o -o tokenize.x
 
-remove_comments.x: main.o
-	g++ -std=c++17 -g main.o -o remove_comments.x
-
-main.o: main.cpp
+main.o: main.cpp commentDFA.h
 	g++ -std=c++17 -g main.cpp -o main.o -c
 
-clean:
-	rm -f remove_comments.x *.o
+commentDFA.o: commentDFA.cpp commentDFA.h
+	g++ -std=c++17 -g commentDFA.cpp -o commentDFA.o -c
 
+clean:
+	rm -f tokenize.x *.o
