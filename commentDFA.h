@@ -1,6 +1,6 @@
 // commentDFA.h
-#ifndef commentDFA_H // include guard
-#define commentDFA_H 
+#ifndef COMMENTDFA_H // include guard
+#define COMMENTDFA_H 
 
 #include <iostream>
 #include <fstream>
@@ -8,7 +8,7 @@
 #include <filesystem>
 #include <sstream> 
 
-class commentDFA
+class CommentDFA
 {
 private:
     int lineCount = 1;
@@ -21,9 +21,9 @@ private:
     bool state5(std::ifstream& file, int& lineCount, int& quoteLinecount, std::ostringstream& buffer); // Inside a quoted string, skip over characters until end of quote  
     bool state6(std::ifstream& file, int& lineCount, std::ostringstream& buffer);  // Detected Asterisk, check if unterminated comment
 public:
-    commentDFA() {}
-    ~commentDFA() { delete this; };
+    CommentDFA() {}
+    ~CommentDFA() { delete this; };
     void begin(std::ifstream& file, std::ostringstream& buffer) { state0(file, lineCount, buffer); }
 };
 
-#endif /* commentDFA_H */
+#endif /* COMMENTDFA_H */

@@ -41,9 +41,9 @@ int main() {
         std::cerr << "Error: Could not open the file " << tests[filenum] << std::endl;
         return 1;  // Exit with an error code
     }
-    commentDFA *removeComments = new commentDFA();
+    CommentDFA *commentDFA = new CommentDFA();
     // Start in state0 to process the file
-    removeComments->begin(file, buffer);
+    commentDFA->begin(file, buffer);
     file.close();  // Close the file after processing
 
     std::cout  << "\nResulting File:" << std::endl;
