@@ -32,8 +32,8 @@ int main() {
 
     // Prompt user for what programming assignment they want to test
     std::cout << "Which programming assignment would you like to test?\n\n"
-         "Type 1 for Programming Assignment 1: Ignore Comments\n"
-         "Type 2 for Programming Assignment 2: Tokenization\n"
+         "(1) Programming Assignment 1: Ignore Comments\n"
+         "(2) Programming Assignment 2: Tokenization\n"
          "Selection: ";
     std::cin >> assignment_num;
 
@@ -41,12 +41,12 @@ int main() {
     if (assignment_num == 1) {
         // Prompt user for what file they want to remove comments
         std::cout << "Which file would you like to remove comments from?\n\n"
-            "Type 1 for programming_assignment_1-test_file_1.c\n"
-            "Type 2 for programming_assignment_1-test_file_2.c\n"
-            "Type 3 for programming_assignment_1-test_file_3.c\n"
-            "Type 4 for programming_assignment_1-test_file_4.c\n"
-            "Type 5 for programming_assignment_1-test_file_5.c\n"
-            "Type 6 for programming_assignment_1-test_file_6.c\n"
+            "(1) programming_assignment_1-test_file_1.c\n"
+            "(2) programming_assignment_1-test_file_2.c\n"
+            "(3) programming_assignment_1-test_file_3.c\n"
+            "(4) programming_assignment_1-test_file_4.c\n"
+            "(5) programming_assignment_1-test_file_5.c\n"
+            "(6) programming_assignment_1-test_file_6.c\n"
             "Selection: ";
         std::cin >> filenum;
         filenum -= 1;
