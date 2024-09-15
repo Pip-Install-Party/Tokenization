@@ -2,3 +2,7 @@
 .vscode
 main.dSYM/
 main
+commentDFA.o
+main.o
+tokenize.x
+tokenization.x
