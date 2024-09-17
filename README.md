@@ -9,6 +9,7 @@ Authored by: Blake Marshall, Brandon Robinson, Holden Ea, Rolando Yax, and Jacob
 This project can be run via make.
 
 ```make```
+
 ```./tokenize.x```
 
 If you have a Windows based machine, you will need to adjust the Makefile to generate an ```.exe``` executable, rather than ```.x```.
