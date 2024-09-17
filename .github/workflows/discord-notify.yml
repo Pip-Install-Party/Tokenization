@@ -9,13 +9,17 @@ on:
     types: [closed]
 
 jobs:
-  # The workflow job name
-  discord-notifier:
-    # The type of runner that the job will run on
+  notify:
     runs-on: ubuntu-latest
-    # Sequence of tasks
+
     steps:
-      - name: Discord Notification
-        uses: tenzin1308/discord-notification@v1.0.0
-        with:
-          discord-webhook-url: ${{ secrets.WEBHOOKS_URL }}
+    - name: Send Discord notification
+      run: |
+        REPO_NAME=$(basename ${{ github.repository }})
+        curl -X POST -H "Content-Type: application/json" \
+        -d "$(jq -n --arg content "Changes in **$REPO_NAME**
+        **Commit by:** ${{ github.actor }}
+        **Message:** ${{ github.event.head_commit.message }}
+        **[View Commit](${{ github.event.head_commit.url }})**" \
+        '{"content":$content}')" \
+        ${{ secrets.DISCORD_WEBHOOK_URL }}
