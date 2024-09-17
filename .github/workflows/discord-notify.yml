@@ -16,10 +16,15 @@ jobs:
     - name: Send Discord notification
       run: |
         REPO_NAME=$(basename ${{ github.repository }})
+
+        # Use the latest commit message if available, otherwise a default message
+        COMMIT_MESSAGE=${{ github.event.head_commit.message || 'No commit message provided.' }}
+
+        # Format the notification with distinct lines to avoid grouping
         curl -X POST -H "Content-Type: application/json" \
         -d "$(jq -n --arg content "Changes in **$REPO_NAME**
         **Commit by:** ${{ github.actor }}
-        **Message:** ${{ github.event.head_commit.message }}
+        **Message:** $COMMIT_MESSAGE
         **[View Commit](${{ github.event.head_commit.url }})**" \
         '{"content":$content}')" \
         ${{ secrets.DISCORD_WEBHOOK_URL }}
