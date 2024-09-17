@@ -5,6 +5,7 @@
 #include <sstream> 
 
 #include "commentDFA.h"
+#include "tokenizer.h"
 
 // Vectors holding the file paths for test files
 const std::filesystem::path a1Tests[] = {
@@ -65,7 +66,7 @@ int main() {
         std::cerr << "Error: Could not open the file " << a1Tests[filenum] << std::endl;
         return 1;  // Exit with an error code
     }
-    commentDFA *removeComments = new commentDFA();
+    CommentDFA *removeComments = new CommentDFA();
     // Start in state0 to process the file
     removeComments->begin(file, buffer);
     file.close();  // Close the file after processing
