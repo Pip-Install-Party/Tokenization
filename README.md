@@ -12,4 +12,4 @@ This project can be run via make.
 
 ```./tokenize.x```
 
-If you have a Windows based machine, you will need to adjust the Makefile to generate an ```.exe``` executable, rather than ```.x```.
+If you have a Windows based machine, you will need to adjust the Makefile to generate a ```.exe``` executable, rather than ```.x```.
