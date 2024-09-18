@@ -68,6 +68,12 @@ void Tokenizer::state0(std::istringstream &inputStream, int &lineCount, std::ost
         state4(inputStream, lineCount, buffer);
         buffer << "\n";
         return;
+    } else if (isdigit(ch)){
+        buffer << "\nToken type: INTEGER \n";
+        buffer << "Token: " << ch;
+        state3(inputStream, lineCount, buffer);
+        buffer << "\n";
+        return;
     } else if (ch == ' '){
         return state0(inputStream, lineCount, buffer);
     } 
