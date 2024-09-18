@@ -60,10 +60,10 @@ int main() {
     filenum -= 1;
 
     // Open the first test file from the vector
-    std::ifstream file(a1Tests[filenum]);
+    std::ifstream file(a2Tests[filenum]);
     
     if (!file.is_open()) {  // Check if the file was opened successfully
-        std::cerr << "Error: Could not open the file " << a1Tests[filenum] << std::endl;
+        std::cerr << "Error: Could not open the file " << a2Tests[filenum] << std::endl;
         return 1;  // Exit with an error code
     }
     CommentDFA *removeComments = new CommentDFA();
@@ -78,11 +78,15 @@ int main() {
     }
     else if(assignment_num == 2) {
         std::string str = buffer.str();
+        str.erase(str.find_last_not_of(" \n\r\t")+1);  // Remove trailing whitespace or newlines
         std::istringstream inputStream(str);
-        Tokenizer tokenizer = new Tokenizer();
-        tokenizer.begin(inputStream);
+        Tokenizer *tokenizer = new Tokenizer();
+        buffer.str("");  // Clears the current content of the buffer
+        buffer.clear();  // Resets any error flags
+        tokenizer->begin(inputStream, buffer);
         std::cout << "Assignment 2\n";
-        std::cout << "Not yet implemented";
+        std::cout  << "\nResulting File:" << std::endl;
+        std::cout << buffer.str();
     }
     else {
         std::cout << "No matching assignments exist for " << assignment_num << ".\n";

@@ -11,12 +11,17 @@
 class Tokenizer
 {
 private:
-    void Tokenizer::state0(std::istringstream &inputStream);
+    int lineCount = 0;
+    void state0(std::istringstream &inputStream, int &lineCount, std::ostringstream& buffer);
+    void state1(std::istringstream &inputStream, int &lineCount, std::ostringstream& buffer);
+    void state2(std::istringstream &inputStream, int &lineCount, std::ostringstream& buffer);
+    void state3(std::istringstream &inputStream, int &lineCount, std::ostringstream& buffer);
+    void state4(std::istringstream &inputStream, int &lineCount, std::ostringstream& buffer);
 
 public:
     Tokenizer() {}
     ~Tokenizer() { delete this; };
-    void begin(std::istringstream &inputStream) { state0(inputStream); }
+    void begin(std::istringstream &inputStream, std::ostringstream& buffer) { state0(inputStream, lineCount, buffer); }
 };
 
 #endif /* TOKENIZER */

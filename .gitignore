@@ -6,3 +6,4 @@ commentDFA.o
 main.o
 tokenize.x
 tokenization.x
+tokenizer.o
