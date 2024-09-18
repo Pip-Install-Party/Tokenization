@@ -3,16 +3,20 @@
 #define TOKENIZER_H
 
 #include <iostream>
+#include <fstream>
+#include <string>
+#include <filesystem>
+#include <sstream> 
 
 class Tokenizer
 {
 private:
-    void Tokenizer::state0(std::ifstream& file, int& lineCount, std::ostringstream& buffer);
+    void Tokenizer::state0(std::istringstream &inputStream);
 
 public:
     Tokenizer() {}
     ~Tokenizer() { delete this; };
-    void begin(std::ifstream& file, int lineCount, std::ostringstream& buffer) { state0(file, lineCount, buffer); }
+    void begin(std::istringstream &inputStream) { state0(inputStream); }
 };
 
 #endif /* TOKENIZER */

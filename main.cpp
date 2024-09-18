@@ -77,6 +77,10 @@ int main() {
         std::cout << buffer.str();
     }
     else if(assignment_num == 2) {
+        std::string str = buffer.str();
+        std::istringstream inputStream(str);
+        Tokenizer tokenizer = new Tokenizer();
+        tokenizer.begin(inputStream);
         std::cout << "Assignment 2\n";
         std::cout << "Not yet implemented";
     }
