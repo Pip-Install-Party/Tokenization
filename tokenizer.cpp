@@ -10,7 +10,6 @@
 void Tokenizer::state0(std::istringstream &inputStream, int &lineCount, std::ostringstream& buffer){
     char ch; 
     inputStream.get(ch);
-        std::cout << "Got: " << ch;
 
     if (inputStream.eof()) {  // Check if the end of file is reached
         return;  // End of input, stop the function
@@ -77,7 +76,7 @@ void Tokenizer::state0(std::istringstream &inputStream, int &lineCount, std::ost
     } else if (ch == ' '){
         return state0(inputStream, lineCount, buffer);
     } 
-    std::cerr << "Unrecognized token... " << ch << " terminating...";
+    std::cerr << "Unrecognized token: " << ch << " Terminating...";
     exit(1);
 }
 

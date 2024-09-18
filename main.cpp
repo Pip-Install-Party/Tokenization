@@ -34,6 +34,7 @@ int main() {
     char ch;
     int assignment_num;
     int filenum;
+    std::ifstream file;
     std::ostringstream buffer;
 
     // Prompt user for what programming assignment they want to test
@@ -59,20 +60,29 @@ int main() {
             
     filenum -= 1;
 
-    // Open the first test file from the vector
-    std::ifstream file(a2Tests[filenum]);
-    
-    if (!file.is_open()) {  // Check if the file was opened successfully
-        std::cerr << "Error: Could not open the file " << a2Tests[filenum] << std::endl;
-        return 1;  // Exit with an error code
+    if (assignment_num == 1) {
+        file.open(a1Tests[filenum]);
+        if (!file.is_open()) {  // Check if the file was opened successfully
+            std::cerr << "Error: Could not open the file " << a1Tests[filenum] << std::endl;
+            exit(1);
+        }
+    } else if (assignment_num == 2) {
+        file.open(a2Tests[filenum]);
+        if (!file.is_open()) {  // Check if the file was opened successfully
+            std::cerr << "Error: Could not open the file " << a2Tests[filenum] << std::endl;
+            exit(1);
+         }
+    }  else {
+        std::cerr << "Inavlid file selection... Exiting...";
+        exit(1);
     }
+
     CommentDFA *removeComments = new CommentDFA();
     // Start in state0 to process the file
     removeComments->begin(file, buffer);
     file.close();  // Close the file after processing
 
     if (assignment_num == 1) {
-
         std::cout  << "\nResulting File:" << std::endl;
         std::cout << buffer.str();
     }
