@@ -1,4 +1,4 @@
-# Program 2 - Tokenization 🚧 Under Construction 🚧
+# Component 2 - Tokenization 🚧 Under Construction 🚧
 
 This program will identify and remove comments from an input test file using a deterministic finite state automoton (DFA) before using a DFA to convert the input file into a series of tokens.
 
