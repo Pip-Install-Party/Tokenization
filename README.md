@@ -2,7 +2,7 @@
 
 This program will identify and remove comments from an input test file using a deterministic finite state automoton (DFA) before using a DFA to convert the input file into a series of tokens.
 
-Authored by: [Blake Marshall](https://github.com/officialblake), [Brandon Robinson](https://github.com/brandonuscg), [Holden Ea](https://github.com/holdenkea), [Rolando Yax](https://github.com/Ryax3), and [Jacob Sellers](https://github.com/JacobS999)
+Authored by: [Blake Marshall](https://github.com/officialblake), [Brandon Robinson](https://github.com/brandonuscg), [Holden Ea](https://github.com/holdenkea), [Rolando Yax](https://github.com/Ryax3), and [Jacob Sellers](https://github.com/JacobS999).
 
 ## Running the program: 
 
