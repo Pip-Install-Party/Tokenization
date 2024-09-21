@@ -98,7 +98,7 @@ void Tokenizer::state0(std::istringstream &inputStream, int &lineCount, std::ost
             buffer << "\nToken type: AMPERSAND\n";
             buffer << "Token:      &\n";
         }
-        return state0(inptStream, lineCount, buffer);
+        return state0(inputStream, lineCount, buffer);
     } else if (ch == '"') {
         buffer << "\nToken type: DOUBLE_QUOTE\n";
         buffer << "Token:      " << ch << "\n";
@@ -246,7 +246,3 @@ void Tokenizer::state5(std::istringstream &inputStream, int &lineCount, std::ost
     }
 }
 
-
-
-
-u
