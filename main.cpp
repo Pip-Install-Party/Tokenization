@@ -44,7 +44,7 @@ int main() {
          "Selection: ";
     std::cin >> assignment_num;
 
-    std::cout << "Which file would you like to remove comments from?\n\n";
+    std::cout << "Which test file would you like to check?\n\n";
 
     if (assignment_num == 1) {
         for (int i = 0; i < std::size(a1Tests); i++) {
