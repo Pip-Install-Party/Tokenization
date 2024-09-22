@@ -47,7 +47,26 @@ void Tokenizer::state0(std::istringstream &inputStream, int &lineCount, std::ost
         buffer << "\nToken type: SEMICOLON\n";
         buffer << "Token:      " << ch << "\n";
         return state0(inputStream, lineCount, buffer);
-    } else if (ch == ',') {
+    } else if (isdigit(ch)) {
+        std::string number;
+        number += ch;
+    
+        // Keep reading until a non-digit character is found.
+        while (inputStream.get(ch) && isdigit(ch)) {
+            number += ch;
+        }
+        
+        inputStream.putback(ch);  // Put back the last non-digit character.
+    
+        // Check if the number is valid.
+        if (!isValidInteger(number)) {
+            std::cerr << "Syntax error on line " << lineCount << ": invalid integer\n";
+            return;
+        }
+    
+        buffer << "\nToken type: INTEGER\n";
+        buffer << "Token:      " << number << "\n";
+        return state0(inputStream, lineCount, buffer);    } else if (ch == ',') {
         buffer << "\nToken type: COMMA\n";
         buffer << "Token:      " << ch << "\n";
         return state0(inputStream, lineCount, buffer);
@@ -121,13 +140,13 @@ void Tokenizer::state0(std::istringstream &inputStream, int &lineCount, std::ost
         state4(inputStream, lineCount, buffer);
         buffer << "\n";
         return;
-    } else if (isdigit(ch)) {
+     } else if (isdigit(ch)) {
         buffer << "\nToken type: INTEGER\n";
         buffer << "Token:      " << ch;
         state3(inputStream, lineCount, buffer);
         buffer << "\n";
         return;
-    } else if (ch == ' ') {
+     } else if (ch == ' ') {
         return state0(inputStream, lineCount, buffer);  // Skip whitespace
     }
     
@@ -243,6 +262,18 @@ void Tokenizer::state5(std::istringstream &inputStream, int &lineCount, std::ost
             std::cerr << "Error: Invalid character literal\n";
             exit(1);
         }
+    }
+}
+
+bool Tokenizer::isValidInteger(const std::string& token) {
+    try {
+        // Attempt to parse the token as an integer.
+        int value = std::stoi(token);
+        return true;  // If parsing succeeds, the integer is valid.
+    } catch (const std::out_of_range& e) {
+        return false;  // Number is too large or small.
+    } catch (const std::invalid_argument& e) {
+        return false;  // The token contains invalid characters.
     }
 }
 
