@@ -10,7 +10,7 @@
 class Tokenizer
 {
 private:
-    int lineCount = 0;
+    int lineCount = 1;
 
     // Declare states
     void state0(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer);
@@ -19,6 +19,8 @@ private:
     void state3(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer);
     void state4(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer);
     void state5(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer);  // Handles character literals
+    void state6(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer);  
+
     void error(const std::string &message, int lineCount);
     bool isValidInteger(const std::string &token);
     
