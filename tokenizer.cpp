@@ -51,7 +51,7 @@ void Tokenizer::state0(std::istringstream &inputStream, int &lineCount, std::ost
         number += ch;
     
         // Keep reading until a non-digit character is found.
-        while (inputStream.get(ch) && ch != ' '  && ch != ';') {
+        while (inputStream.get(ch) && ch != ' '  && ch != ';' && ch != ')') {
             number += ch;
         }
         
