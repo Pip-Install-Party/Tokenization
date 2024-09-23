@@ -162,16 +162,23 @@ void Tokenizer::state1(std::istringstream &inputStream, int &lineCount, std::ost
     if (inputStream.eof()) {  // End of file
         std::cerr << "Error: Unterminated string\n";
         exit(1);
-    } else if (ch == '\n') {
-        lineCount++;
     } else if (ch == '"') {
+        buffer << "\n";
         buffer << "\nToken type: DOUBLE_QUOTE\n";
         buffer << "Token:      " << ch << "\n";
         return state0(inputStream, lineCount, buffer);
     } else if (ch == '\\') {  // Handle escape characters in strings
         buffer << ch;  // Add the backslash
         inputStream.get(ch);
-        buffer << ch;  // Add the escaped character (e.g., 'n' for '\n')
+        if (ch == 'n') { // Case to add specifically 'n' to buffer
+            buffer << "n";
+        } else {
+            buffer << ch;  // Add other escape character other than /n
+        }
+    } else if (ch == '\n') { // Real newline in input
+        lineCount++;
+        std::cerr << "Error: Unterminated string on line " << lineCount << "\n";
+        exit(1);
     } else {
         buffer << ch;
     }

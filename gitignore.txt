@@ -7,4 +7,3 @@ main.o
 tokenize.x
 tokenization.x
 tokenizer.o
-tokenize.exe
