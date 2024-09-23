@@ -194,13 +194,13 @@ void Tokenizer::state2(std::istringstream &inputStream, int &lineCount, std::ost
         lineCount++;
     } else if (isdigit(ch)) {
        buffer << "\nToken type: INTEGER\n";
-       buffer << "Token:      -" << ch;
+       buffer << "Token: -" << ch;
        return state3(inputStream, lineCount, buffer);
     } else {
         inputStream.putback(ch);  // Handle hyphen if not part of integer
     }
     buffer << "\nToken type: HYPHEN\n";
-    buffer << "Token:      -" << "\n";
+    buffer << "Token: -" << "\n";
     return;
 }
 
