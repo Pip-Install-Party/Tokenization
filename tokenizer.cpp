@@ -286,14 +286,12 @@ void Tokenizer::state6(std::istringstream &inputStream, int &lineCount, std::ost
 
 bool Tokenizer::isValidInteger(const std::string& token) {
     try {
-        // Attempt to parse the token as an integer.
         int value = std::stoi(token);
-        // Check if the entire token matches the converted value.
         return std::to_string(value) == token;  
     } catch (const std::out_of_range& e) {
-        return false;  // Number is too large or small.
+        return false;  
     } catch (const std::invalid_argument& e) {
-        return false;  // The token contains invalid characters.
+        return false; 
     }
 }
 
