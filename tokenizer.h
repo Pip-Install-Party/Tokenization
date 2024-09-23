@@ -10,7 +10,7 @@
 class Tokenizer
 {
 private:
-    int lineCount = 0;
+    int lineCount = 1;
 
     // Declare states
     void state0(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer);

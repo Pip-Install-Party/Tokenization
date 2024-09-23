@@ -51,7 +51,7 @@ void Tokenizer::state0(std::istringstream &inputStream, int &lineCount, std::ost
         number += ch;
     
         // Keep reading until a non-digit character is found.
-        while (inputStream.get(ch) && isdigit(ch)) {
+        while (inputStream.get(ch) && ch != ' '  && ch != ';') {
             number += ch;
         }
         
@@ -60,9 +60,9 @@ void Tokenizer::state0(std::istringstream &inputStream, int &lineCount, std::ost
         // Check if the number is valid.
         if (!isValidInteger(number)) {
             std::cerr << "Syntax error on line " << lineCount << ": invalid integer\n";
-            return;
+            exit(1);
         }
-    
+
         buffer << "\nToken type: INTEGER\n";
         buffer << "Token: " << number << "\n";
         return state0(inputStream, lineCount, buffer);    
@@ -196,9 +196,9 @@ void Tokenizer::state2(std::istringstream &inputStream, int &lineCount, std::ost
        buffer << "\nToken type: INTEGER\n";
        buffer << "Token:      -" << ch;
        return state3(inputStream, lineCount, buffer);
+    } else {
+        inputStream.putback(ch);  // Handle hyphen if not part of integer
     }
-    
-    inputStream.putback(ch);  // Handle hyphen if not part of integer
     buffer << "\nToken type: HYPHEN\n";
     buffer << "Token:      -" << "\n";
     return;
@@ -288,7 +288,8 @@ bool Tokenizer::isValidInteger(const std::string& token) {
     try {
         // Attempt to parse the token as an integer.
         int value = std::stoi(token);
-        return true;  // If parsing succeeds, the integer is valid.
+        // Check if the entire token matches the converted value.
+        return std::to_string(value) == token;  
     } catch (const std::out_of_range& e) {
         return false;  // Number is too large or small.
     } catch (const std::invalid_argument& e) {
