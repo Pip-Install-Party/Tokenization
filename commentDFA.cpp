@@ -145,6 +145,7 @@ bool CommentDFA::state6(std::ifstream& file, int& lineCount, std::ostringstream&
     if (ch == '/') { // If a slash is found, return false
         return false;
     } else {  
+        buffer << '*';
         file.putback(ch); // Otherwise, put the character back
         state0(file, lineCount, buffer); // Go to state 0
         return true; // And return true
