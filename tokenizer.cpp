@@ -298,7 +298,7 @@ void Tokenizer::state6(std::istringstream &inputStream, int &lineCount, std::ost
     } else {
         inputStream.putback(ch);
         buffer << "\nToken type: GREATER_THAN\n";
-        buffer << "Token: <\n";
+        buffer << "Token: >\n";
     }
     return;
 }
