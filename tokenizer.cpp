@@ -78,11 +78,11 @@ void Tokenizer::state0(std::istringstream &inputStream, int &lineCount, std::ost
         inputStream.get(ch);
         if (ch == '=') {
             buffer << "\nToken type: BOOLEAN_EQUAL\n";
-            buffer << "Token:      ==\n";
+            buffer << "Token: ==\n";
         } else {
             inputStream.putback(ch);
             buffer << "\nToken type: ASSIGNMENT_OPERATOR\n";
-            buffer << "Token:      =\n";
+            buffer << "Token: =\n";
         }
         return state0(inputStream, lineCount, buffer);
     } else if (ch == '+') {
@@ -114,11 +114,11 @@ void Tokenizer::state0(std::istringstream &inputStream, int &lineCount, std::ost
         inputStream.get(ch);
         if (ch == '&') {
             buffer << "\nToken type: BOOLEAN_AND\n";
-            buffer << "Token:      &&\n";
+            buffer << "Token: &&\n";
         } else {
             inputStream.putback(ch);
             buffer << "\nToken type: AMPERSAND\n";
-            buffer << "Token:      &\n";
+            buffer << "Token: &\n";
         }
         return state0(inputStream, lineCount, buffer);
     } else if (ch == '"') {
