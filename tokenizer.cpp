@@ -46,6 +46,10 @@ void Tokenizer::state0(std::istringstream &inputStream, int &lineCount, std::ost
         buffer << "\nToken type: SEMICOLON\n";
         buffer << "Token: " << ch << "\n";
         return state0(inputStream, lineCount, buffer);
+    } else if (ch == '/') {
+        buffer << "\nToken type: DIVIDE\n";
+        buffer << "Token: " << ch << "\n";
+        return state0(inputStream, lineCount, buffer);
     } else if (isdigit(ch)) {
         std::string number;
         number += ch;
@@ -86,13 +90,13 @@ void Tokenizer::state0(std::istringstream &inputStream, int &lineCount, std::ost
         buffer << "Token: " << ch << "\n";
         return state0(inputStream, lineCount, buffer);
     } else if (ch == '-') {
-        return state2(inputStream, lineCount, buffer);  // Handle minus sign or negative integers
+        state2(inputStream, lineCount, buffer);  // Handle minus sign or negative integers
+        return state0(inputStream, lineCount, buffer);
     } else if (ch == '>') {
-        buffer << "\nToken type: GREATER_THAN\n";
-        buffer << "Token: " << ch << "\n";
+        state6(inputStream, lineCount, buffer);
         return state0(inputStream, lineCount, buffer);
     } else if (ch == '<') {
-        state6(inputStream, lineCount, buffer);
+        state7(inputStream, lineCount, buffer);
         return state0(inputStream, lineCount, buffer);
     } else if (ch == '*') {
         buffer << "\nToken type: ASTERISK\n";
@@ -121,7 +125,7 @@ void Tokenizer::state0(std::istringstream &inputStream, int &lineCount, std::ost
         buffer << "\nToken type: DOUBLE_QUOTE\n";
         buffer << "Token: " << ch << "\n";
         buffer << "\nToken type: STRING\n";
-        buffer << "Token:      ";
+        buffer << "Token: ";
         state1(inputStream, lineCount, buffer);
         return state0(inputStream, lineCount, buffer);
     } else if (ch == '\'') { // Found a single quote
@@ -285,6 +289,21 @@ void Tokenizer::state5(std::istringstream &inputStream, int &lineCount, std::ost
 }
 
 void Tokenizer::state6(std::istringstream &inputStream, int &lineCount, std::ostringstream& buffer) {
+    char ch;
+    inputStream.get(ch);
+
+    if (ch == '=') {
+        buffer << "\nToken type: GT_EQUAL\n";
+        buffer << "Token: <=\n";
+    } else {
+        inputStream.putback(ch);
+        buffer << "\nToken type: GREATER_THAN\n";
+        buffer << "Token: <\n";
+    }
+    return;
+}
+
+void Tokenizer::state7(std::istringstream &inputStream, int &lineCount, std::ostringstream& buffer) {
     char ch;
     inputStream.get(ch);
 
