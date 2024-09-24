@@ -294,7 +294,7 @@ void Tokenizer::state6(std::istringstream &inputStream, int &lineCount, std::ost
 
     if (ch == '=') {
         buffer << "\nToken type: GT_EQUAL\n";
-        buffer << "Token: <=\n";
+        buffer << "Token: >=\n";
     } else {
         inputStream.putback(ch);
         buffer << "\nToken type: GREATER_THAN\n";
