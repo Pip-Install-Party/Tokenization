@@ -51,7 +51,7 @@ void Tokenizer::state0(std::istringstream &inputStream, int &lineCount, std::ost
         number += ch;
     
         // Keep reading until a non-digit character is found.
-        while (inputStream.get(ch) && ch != ' '  && ch != ';' && ch != ')') {
+        while (inputStream.get(ch) && ch != ' '  && ch != ';' && ch != ')' && ch != ']') {
             number += ch;
         }
         
@@ -124,12 +124,10 @@ void Tokenizer::state0(std::istringstream &inputStream, int &lineCount, std::ost
         buffer << "Token:      ";
         state1(inputStream, lineCount, buffer);
         return state0(inputStream, lineCount, buffer);
-    } else if (ch == '\'') {
+    } else if (ch == '\'') { // Found a single quote
         buffer << "\nToken type: SINGLE_QUOTE\n";
-        buffer << "Token: " << ch << "\n";
-        buffer << "\nToken type: CHAR_LITERAL\n";
-        buffer << "Token:      ";
-        return state5(inputStream, lineCount, buffer);  // New state for handling character literals
+        buffer << "Token: " << ch << "\n"; // Add single quote to buffer 
+        return state5(inputStream, lineCount, buffer);  // Check what the single quote is 
     } else if (ch == '_') {
         buffer << "\nToken type: UNDERSCORE\n";
         buffer << "Token: " << ch << "\n";
@@ -243,29 +241,46 @@ void Tokenizer::state5(std::istringstream &inputStream, int &lineCount, std::ost
     char ch;
     inputStream.get(ch);
 
+    // End of file reached too early
     if (inputStream.eof()) {
         std::cerr << "Error: Unterminated character literal\n";
         exit(1);
-    } else if (ch == '\'') {
+    }
+
+    // Check for the closing single quote (empty character literal) ** not sure if this should be accepted but I am for now **
+    if (ch == '\'') {
         buffer << "\nToken type: SINGLE_QUOTE\n";
-        buffer << "Token: " << ch << "\n";
-        return;
-    } else if (ch == '\\') {
-        buffer << ch;  // Escaped characters in character literals
-        inputStream.get(ch);
-        buffer << ch;
-        inputStream.get(ch);
-    } else {
-        buffer << ch;
-        inputStream.get(ch);  // Close the character literal
-        if (ch == '\'') {
-            buffer << "\nToken type: SINGLE_QUOTE\n";
-            buffer << "Token: " << ch << "\n";
-            return;
-        } else {
-            std::cerr << "Error: Invalid character literal\n";
+        buffer << "Token: ''\n";  // Handle empty character literal
+        return state0(inputStream, lineCount, buffer);
+    }
+
+    // Check for escaped characters
+    if (ch == '\\') {
+        char nextCh;
+        inputStream.get(nextCh); // Get the next character after backslash
+
+        // Verify that the next character is a valid escape character
+        if (nextCh == 'n' || nextCh == 't' || nextCh == '\\'  || nextCh == '0') { // Can add more if needed... 
+            buffer << "\nToken type: STRING\n";
+            buffer << "Token: \\" << nextCh << "\n";   // Add the escaped character to the buffer
+        } else { // Else, not a valid esc char
+            std::cerr << "Error: Invalid escape sequence '\\" << nextCh << "\n";
             exit(1);
         }
+    } else { // Regular char not escape char
+        buffer << "\nToken type: CHAR_LITERAL\n";
+        buffer << "Token: " << ch << "\n"; // Handle the literal inside the single quotes
+    }
+
+    // Check for the closing single quote
+    inputStream.get(ch);
+    if (ch == '\'') {
+        buffer << "\nToken type: SINGLE_QUOTE\n";
+        buffer << "Token: " << ch << "\n"; // Handle the final character
+        return state0(inputStream, lineCount, buffer);
+    } else {
+        std::cerr << "Error: Invalid character literal\n";
+        exit(1);
     }
 }
 
