@@ -263,34 +263,19 @@ void Tokenizer::state5(std::istringstream &inputStream, int &lineCount, std::ost
     if (inputStream.eof()) {
         std::cerr << "Error: Unterminated character literal\n";
         exit(1);
-    } else if (ch == '\'') {  // Check for the closing single quote (empty character literal) ** not sure if this should be accepted but I am for now **
+    } else if (ch == '\'') {  // Check for the closing single quote (for empty single quotes) ** not sure if this should be accepted but I am for now **
         buffer << "\nToken type: SINGLE_QUOTE\n";
         buffer << "Token: ''\n";  // Handle empty character literal
         return state0(inputStream, lineCount, buffer);
     } else if (ch == '\\') {     // Check for escaped characters
-        char nextCh;
-        inputStream.get(nextCh); // Get the next character after backslash
-// **********************************************************************************************
-//         This needs to be its own state. There should not be any nested if statements.
-
-        // Verify that the next character is a valid escape character
-        if (nextCh == 'n' || nextCh == 't' || nextCh == '\\'  || nextCh == '0') { // Can add more if needed... 
-            buffer << "\nToken type: STRING\n";
-            buffer << "Token: \\" << nextCh << "\n";   // Add the escaped character to the buffer
-        } else { // Else, not a valid esc char
-            std::cerr << "Error: Invalid escape sequence '\\" << nextCh << "\n";
-            exit(1);
-        }
-// ************************************************************************************************
+        state8(inputStream, lineCount, buffer); // Handle the esc character
     } 
-    else { // Regular char not escape char
+    else { // Found a regular char, not an escape character
         buffer << "\nToken type: CHAR_LITERAL\n";
         buffer << "Token: " << ch << "\n"; // Handle the literal inside the single quotes
     }
-// **********************************************************************************************
-//                      Check this 
 
-    // Check for the closing single quote
+    // Check for the closing single quote (to the non empty single quotes)
     inputStream.get(ch); // Why are we getting another character on the same iteration and checking for '\' again? Shouldn't we be calling state5() again instead? Repeated code? 
     if (ch == '\'') {
         buffer << "\nToken type: SINGLE_QUOTE\n";
@@ -300,7 +285,6 @@ void Tokenizer::state5(std::istringstream &inputStream, int &lineCount, std::ost
         std::cerr << "Error: Invalid character literal\n";
         exit(1);
     }
-// **********************************************************************************************
 
 }
 
@@ -332,6 +316,20 @@ void Tokenizer::state7(std::istringstream &inputStream, int &lineCount, std::ost
         buffer << "Token: <\n";
     }
     return;
+}
+
+void Tokenizer::state8(std::istringstream &inputStream, int &lineCount, std::ostringstream& buffer) {
+    char nextCh;
+    inputStream.get(nextCh); // Get the next character after backslash
+    
+    // Verify that the next character is a valid escape character
+    if (nextCh == 'n' || nextCh == 't' || nextCh == '\\'  || nextCh == '0') { // Can add more if needed... 
+        buffer << "\nToken type: STRING\n";
+        buffer << "Token: \\" << nextCh << "\n";   // Add the escaped character to the buffer
+    } else { // Else, not a valid esc char
+        std::cerr << "Error: Invalid escape sequence '\\" << nextCh << "\n";
+        exit(1);
+    }
 }
 
 bool Tokenizer::isValidInteger(const std::string& token) {
