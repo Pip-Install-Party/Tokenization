@@ -21,7 +21,14 @@ private:
     void state5(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer);  // Handles character literals
     void state6(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer);  
     void state7(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer);  
-    void state8(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer);  
+    void state8(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer); 
+    void state9(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer);  
+    void state10(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer);  
+    void state11(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer);  
+    void state12(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer);  
+    void state13(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer);  
+
+
 
     void error(const std::string &message, int lineCount);
     bool isValidInteger(const std::string &token);
