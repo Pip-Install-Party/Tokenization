@@ -170,7 +170,7 @@ void Tokenizer::state2(std::istringstream &inputStream, int &lineCount, std::ost
     } else {
         inputStream.putback(ch);  // If it's not part of a number, put the character back.
     }
-    buffer << "\nToken type: HYPHEN\n";
+    buffer << "\nToken type: MINUS\n";
     buffer << "Token: -" << "\n";
     return;
 }
@@ -224,7 +224,7 @@ void Tokenizer::state5(std::istringstream &inputStream, int &lineCount, std::ost
     } else if (ch == '\\') {  // Escape character inside the literal.
         state8(inputStream, lineCount, buffer);  // Handle escape sequences.
     } else {  // Handle regular character literals.
-        buffer << "\nToken type: CHAR_LITERAL\n";
+        buffer << "\nToken type: STRING\n";
         buffer << "Token: " << ch << "\n";
     }
     state11(inputStream, lineCount, buffer);  // Check for the closing single quote.
@@ -240,7 +240,7 @@ void Tokenizer::state6(std::istringstream &inputStream, int &lineCount, std::ost
         buffer << "Token: >=\n";
     } else {  // Handle '>' (greater than).
         inputStream.putback(ch);  // Put character back if not '='.
-        buffer << "\nToken type: GREATER_THAN\n";
+        buffer << "\nToken type: GT\n";
         buffer << "Token: >\n";
     }
     return;
@@ -256,7 +256,7 @@ void Tokenizer::state7(std::istringstream &inputStream, int &lineCount, std::ost
         buffer << "Token: <=\n";
     } else {  // Handle '<' (less than).
         inputStream.putback(ch);  // Put character back if not '='.
-        buffer << "\nToken type: LESS_THAN\n";
+        buffer << "\nToken type: LT\n";
         buffer << "Token: <\n";
     }
     return;
