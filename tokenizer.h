@@ -18,7 +18,7 @@ private:
     void state2(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer);
     void state3(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer);
     void state4(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer);
-    void state5(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer);  // Handles character literals
+    void state5(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer);  
     void state6(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer);  
     void state7(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer);  
     void state8(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer); 
@@ -27,11 +27,7 @@ private:
     void state11(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer);  
     void state12(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer);  
     void state13(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer);  
-
-
-
-    void error(const std::string &message, int lineCount);
-    bool isValidInteger(const std::string &token);
+    void state14(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer);  
     
 public:
     Tokenizer() {}
