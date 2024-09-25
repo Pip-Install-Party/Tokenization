@@ -51,26 +51,11 @@ void Tokenizer::state0(std::istringstream &inputStream, int &lineCount, std::ost
         buffer << "Token: " << ch << "\n";
         return state0(inputStream, lineCount, buffer);
     } else if (isdigit(ch)) {
-        //state12(inputStream, lineCount, buffer);
-        //************************************************** wasnt working plz help 
-        std::string number;
-        number += ch;
-        // Keep reading until a non-digit character is found.
-        while (inputStream.get(ch) && ch != ' '  && ch != ';' && ch != ')' && ch != ']') {
-            number += ch;
-        }
-        
-        inputStream.putback(ch);  // Put back the last non-digit character.
-
-        // Check if the number is valid.
-        if (!isValidInteger(number)) {
-            std::cerr << "Syntax error on line " << lineCount << ": invalid integer\n";
-            exit(1);
-        }
-
+        inputStream.putback(ch);
         buffer << "\nToken type: INTEGER\n";
-        buffer << "Token: " << number << "\n";
-        //*****************************************************
+        buffer << "Token: ";
+        state12(inputStream, lineCount, buffer);
+        buffer << "\n";
         return state0(inputStream, lineCount, buffer);    
     } else if (ch == ',') {
         buffer << "\nToken type: COMMA\n";
@@ -117,7 +102,8 @@ void Tokenizer::state0(std::istringstream &inputStream, int &lineCount, std::ost
     } else if (ch == '\'') { // Found a single quote
         buffer << "\nToken type: SINGLE_QUOTE\n";
         buffer << "Token: " << ch << "\n"; // Add single quote to buffer 
-        return state5(inputStream, lineCount, buffer);  // Check what the single quote is 
+        state5(inputStream, lineCount, buffer);  // Check what the single quote is 
+        return state0(inputStream, lineCount, buffer);
     } else if (ch == '_') {
         buffer << "\nToken type: UNDERSCORE\n";
         buffer << "Token: " << ch << "\n";
@@ -233,7 +219,7 @@ void Tokenizer::state5(std::istringstream &inputStream, int &lineCount, std::ost
     } else if (ch == '\'') {  // Check for the closing single quote (for empty single quotes) ** not sure if this should be accepted but I am for now **
         buffer << "\nToken type: SINGLE_QUOTE\n";
         buffer << "Token: ''\n";  // Handle empty character literal
-        return state0(inputStream, lineCount, buffer);
+        return;
     } else if (ch == '\\') {     // Check for escaped characters
         state8(inputStream, lineCount, buffer); // Handle the esc character
     } 
@@ -318,34 +304,26 @@ void Tokenizer::state11(std::istringstream &inputStream, int &lineCount, std::os
     if (ch == '\'') {
         buffer << "\nToken type: SINGLE_QUOTE\n";
         buffer << "Token: " << ch << "\n"; // Handle the final character
-        return state0(inputStream, lineCount, buffer);
+        return;
     } else {
         std::cerr << "Error: Invalid character literal\n";
         exit(1);
     }
+    return;
 }
 
 void Tokenizer::state12(std::istringstream &inputStream, int &lineCount, std::ostringstream& buffer) {
     char ch;
     inputStream.get(ch);
-    inputStream.putback(ch);
-    std::string number;
-        number += ch;
     // Keep reading until a non-digit character is found.
-    while (inputStream.get(ch) && ch != ' '  && ch != ';' && ch != ')' && ch != ']') {
-        number += ch;
+    if(!isdigit(ch)){
+        inputStream.putback(ch);
+        state14(inputStream, lineCount, buffer);
+        return; 
     }
-    
-    inputStream.putback(ch);  // Put back the last non-digit character.
-
-    // Check if the number is valid.
-    if (!isValidInteger(number)) {
-        std::cerr << "Syntax error on line " << lineCount << ": invalid integer\n";
-        exit(1);
-    }
-
-    buffer << "\nToken type: INTEGER\n";
-    buffer << "Token: " << number << "\n";
+    buffer << ch;
+    state12(inputStream, lineCount, buffer);
+    return;
 }
 
 void Tokenizer::state13(std::istringstream &inputStream, int &lineCount, std::ostringstream& buffer) {
@@ -359,17 +337,16 @@ void Tokenizer::state13(std::istringstream &inputStream, int &lineCount, std::os
         buffer << "\nToken type: ASSIGNMENT_OPERATOR\n";
         buffer << "Token: =\n";
     }
-    return state0(inputStream, lineCount, buffer);
+    return;
 }
 
-bool Tokenizer::isValidInteger(const std::string& token) {
-    try {
-        int value = std::stoi(token);
-        return std::to_string(value) == token;  
-    } catch (const std::out_of_range& e) {
-        return false;  
-    } catch (const std::invalid_argument& e) {
-        return false; 
+void Tokenizer::state14(std::istringstream &inputStream, int &lineCount, std::ostringstream& buffer) {
+    char ch;
+    inputStream.get(ch);
+    if (ch != ' '  && ch != ';' && ch != ')' && ch != ']') {
+        std::cerr << "Syntax error on line " <<  lineCount << ": invalid integer";
+        exit(1);
     }
+    inputStream.putback(ch);
+    return;
 }
-
