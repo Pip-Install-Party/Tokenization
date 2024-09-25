@@ -332,6 +332,7 @@ void Tokenizer::state8(std::istringstream &inputStream, int &lineCount, std::ost
     }
 }
 
+
 bool Tokenizer::isValidInteger(const std::string& token) {
     try {
         int value = std::stoi(token);
