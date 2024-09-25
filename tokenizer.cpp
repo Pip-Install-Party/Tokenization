@@ -53,7 +53,9 @@ void Tokenizer::state0(std::istringstream &inputStream, int &lineCount, std::ost
     } else if (isdigit(ch)) {
         std::string number;
         number += ch;
-    
+// **********************************************************************************************
+//         This needs to be its own state. There should not be any nested if statements.
+
         // Keep reading until a non-digit character is found.
         while (inputStream.get(ch) && ch != ' '  && ch != ';' && ch != ')' && ch != ']') {
             number += ch;
@@ -69,12 +71,15 @@ void Tokenizer::state0(std::istringstream &inputStream, int &lineCount, std::ost
 
         buffer << "\nToken type: INTEGER\n";
         buffer << "Token: " << number << "\n";
+// **********************************************************************************************
         return state0(inputStream, lineCount, buffer);    
     } else if (ch == ',') {
         buffer << "\nToken type: COMMA\n";
         buffer << "Token: " << ch << "\n";
         return state0(inputStream, lineCount, buffer);
     } else if (ch == '=') {
+// **********************************************************************************************
+//         This needs to be its own state. There should not be any nested if statements.
         inputStream.get(ch);
         if (ch == '=') {
             buffer << "\nToken type: BOOLEAN_EQUAL\n";
@@ -85,6 +90,7 @@ void Tokenizer::state0(std::istringstream &inputStream, int &lineCount, std::ost
             buffer << "Token: =\n";
         }
         return state0(inputStream, lineCount, buffer);
+// **********************************************************************************************
     } else if (ch == '+') {
         buffer << "\nToken type: PLUS\n";
         buffer << "Token: " << ch << "\n";
@@ -111,6 +117,9 @@ void Tokenizer::state0(std::istringstream &inputStream, int &lineCount, std::ost
         buffer << "Token: " << ch << "\n";
         return state0(inputStream, lineCount, buffer);
     } else if (ch == '&') {
+// **********************************************************************************************
+//         This needs to be its own state. There should not be any nested if statements.
+
         inputStream.get(ch);
         if (ch == '&') {
             buffer << "\nToken type: BOOLEAN_AND\n";
@@ -120,6 +129,7 @@ void Tokenizer::state0(std::istringstream &inputStream, int &lineCount, std::ost
             buffer << "\nToken type: AMPERSAND\n";
             buffer << "Token: &\n";
         }
+// **********************************************************************************************
         return state0(inputStream, lineCount, buffer);
     } else if (ch == '"') {
         buffer << "\nToken type: DOUBLE_QUOTE\n";
@@ -167,6 +177,9 @@ void Tokenizer::state1(std::istringstream &inputStream, int &lineCount, std::ost
         buffer << "Token: " << ch << "\n";
         return;
     } else if (ch == '\\') {  // Handle escape characters in strings
+// **********************************************************************************************
+//         This needs to be its own state. There should not be any nested if statements.
+
         buffer << ch;  // Add the backslash
         inputStream.get(ch);
         if (ch == 'n') { // Case to add specifically 'n' to buffer
@@ -174,6 +187,7 @@ void Tokenizer::state1(std::istringstream &inputStream, int &lineCount, std::ost
         } else {
             buffer << ch;  // Add other escape character other than /n
         }
+// **********************************************************************************************     
     } else if (ch == '\n') { // Real newline in input
         lineCount++;
         std::cerr << "Error: Unterminated string on line " << lineCount << "\n";
@@ -249,19 +263,15 @@ void Tokenizer::state5(std::istringstream &inputStream, int &lineCount, std::ost
     if (inputStream.eof()) {
         std::cerr << "Error: Unterminated character literal\n";
         exit(1);
-    }
-
-    // Check for the closing single quote (empty character literal) ** not sure if this should be accepted but I am for now **
-    if (ch == '\'') {
+    } else if (ch == '\'') {  // Check for the closing single quote (empty character literal) ** not sure if this should be accepted but I am for now **
         buffer << "\nToken type: SINGLE_QUOTE\n";
         buffer << "Token: ''\n";  // Handle empty character literal
         return state0(inputStream, lineCount, buffer);
-    }
-
-    // Check for escaped characters
-    if (ch == '\\') {
+    } else if (ch == '\\') {     // Check for escaped characters
         char nextCh;
         inputStream.get(nextCh); // Get the next character after backslash
+// **********************************************************************************************
+//         This needs to be its own state. There should not be any nested if statements.
 
         // Verify that the next character is a valid escape character
         if (nextCh == 'n' || nextCh == 't' || nextCh == '\\'  || nextCh == '0') { // Can add more if needed... 
@@ -271,13 +281,17 @@ void Tokenizer::state5(std::istringstream &inputStream, int &lineCount, std::ost
             std::cerr << "Error: Invalid escape sequence '\\" << nextCh << "\n";
             exit(1);
         }
-    } else { // Regular char not escape char
+// ************************************************************************************************
+    } 
+    else { // Regular char not escape char
         buffer << "\nToken type: CHAR_LITERAL\n";
         buffer << "Token: " << ch << "\n"; // Handle the literal inside the single quotes
     }
+// **********************************************************************************************
+//                      Check this 
 
     // Check for the closing single quote
-    inputStream.get(ch);
+    inputStream.get(ch); // Why are we getting another character on the same iteration and checking for '\' again? Shouldn't we be calling state5() again instead? Repeated code? 
     if (ch == '\'') {
         buffer << "\nToken type: SINGLE_QUOTE\n";
         buffer << "Token: " << ch << "\n"; // Handle the final character
@@ -286,6 +300,8 @@ void Tokenizer::state5(std::istringstream &inputStream, int &lineCount, std::ost
         std::cerr << "Error: Invalid character literal\n";
         exit(1);
     }
+// **********************************************************************************************
+
 }
 
 void Tokenizer::state6(std::istringstream &inputStream, int &lineCount, std::ostringstream& buffer) {
