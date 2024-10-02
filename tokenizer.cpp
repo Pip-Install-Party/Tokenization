@@ -4,6 +4,7 @@
 #include <string>
 #include <filesystem>
 #include <sstream>
+#include <set>
 #include "tokenizer.h"
 
 // Base state. Branch elsewhere from here.
@@ -142,7 +143,7 @@ void Tokenizer::state1(std::istringstream &inputStream, int &lineCount, std::ost
         return;
     } else if (ch == '\\') {  // Handle escape characters inside the string.
         buffer << ch;  // Add the backslash to the buffer.
-        state9(inputStream, lineCount, buffer);  // Transition to state9 to handle the escape sequence.
+        state8(inputStream, lineCount, buffer);  // Transition to state9 to handle the escape sequence.
     } else if (ch == '\n') {  // Handle newlines within the string (error).
         lineCount++;
         std::cerr << "Error: Unterminated string on line " << lineCount << "\n";
@@ -264,28 +265,18 @@ void Tokenizer::state7(std::istringstream &inputStream, int &lineCount, std::ost
 
 // Handle escape sequences inside string literals (e.g., '\n', '\t').
 void Tokenizer::state8(std::istringstream &inputStream, int &lineCount, std::ostringstream& buffer) {
-    char nextCh;
-    inputStream.get(nextCh);  // Get the character after the backslash.
-
-    // Handle valid escape characters like '\n', '\t', etc.
-    if (nextCh == 'n' || nextCh == 't' || nextCh == '\\'  || nextCh == '0') {
-        buffer << "\nToken type: STRING\n";
-        buffer << "Token: \\" << nextCh << "\n";  // Add escape sequence to buffer.
-    } else {  // Handle invalid escape sequences.
-        std::cerr << "Error: Invalid escape sequence '\\" << nextCh << "\n";
-        exit(1);
-    }
-}
-
-// Handle character escape sequences (like '\n').
-void Tokenizer::state9(std::istringstream &inputStream, int &lineCount, std::ostringstream& buffer) {
+    // Set of valid escape characters.
+    const std::set<char> validEscapeChars = {'n', 't', '\\', '0'};
+    
     char ch;
     inputStream.get(ch);  // Get the character after the backslash.
 
-    if (ch == 'n') {  // Handle newline escape '\n'.
-        buffer << "n";
+    if (validEscapeChars.find(ch) != validEscapeChars.end()) {
+        buffer << "\nToken type: STRING\n";
+        buffer << "Token: \\" << ch << "\n";  // Add valid escape sequence to the buffer.
     } else {
-        buffer << ch;  // Handle other escape characters.
+        std::cerr << "Error: Invalid escape sequence '\\" << ch << "' on line " << lineCount << "\n";
+        exit(1);  // Terminate on invalid escape sequence.
     }
 }
 

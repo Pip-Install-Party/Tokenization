@@ -6,7 +6,7 @@
 #include <fstream>
 #include <string>
 #include <filesystem>
-
+#include <set>
 // The Tokenizer class is responsible for breaking down a stream of input into various tokens,
 // using multiple states to process different types of input, such as numbers, operators, and identifiers.
 class Tokenizer
@@ -46,7 +46,7 @@ private:
     void state8(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer); 
 
     // State to process escape characters (like '\n') after the backslash in strings.
-    void state9(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer);
+//    void state9(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer);
 
     // State to process boolean AND ('&&') or bitwise AND ('&').
     void state10(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer);
