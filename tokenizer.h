@@ -61,7 +61,7 @@ private:
     void state13(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer);
 
     // State to validate the termination of integer tokens.
-    void state14(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer);  
+    void state14(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer);   
     
 public:
     // Constructor for the Tokenizer class. Initializes an empty object.

@@ -215,7 +215,7 @@ void Tokenizer::state5(std::istringstream &inputStream, int &lineCount, std::ost
     inputStream.get(ch);  // Get the next character.
 
     if (inputStream.eof()) {  // End of file, error for unterminated character literal.
-        std::cerr << "Error: Unterminated character literal\n";
+        std::cerr << "Error: Unterminated character literal on line" << lineCount;
         exit(1);
     } else if (ch == '\'') {  // Empty character literal, handle it.
         buffer << "\nToken type: SINGLE_QUOTE\n";
@@ -228,6 +228,7 @@ void Tokenizer::state5(std::istringstream &inputStream, int &lineCount, std::ost
         buffer << "Token: " << ch << "\n";
     }
     state11(inputStream, lineCount, buffer);  // Check for the closing single quote.
+    return;
 }
 
 // Process greater-than operator and greater-than-or-equal-to operator.
@@ -264,17 +265,19 @@ void Tokenizer::state7(std::istringstream &inputStream, int &lineCount, std::ost
 
 // Handle escape sequences inside string literals (e.g., '\n', '\t').
 void Tokenizer::state8(std::istringstream &inputStream, int &lineCount, std::ostringstream& buffer) {
-    char nextCh;
-    inputStream.get(nextCh);  // Get the character after the backslash.
+    char ch;
+    inputStream.get(ch);  // Get the character after the backslash.
 
     // Handle valid escape characters like '\n', '\t', etc.
-    if (nextCh == 'n' || nextCh == 't' || nextCh == '\\'  || nextCh == '0') {
-        buffer << "\nToken type: STRING\n";
-        buffer << "Token: \\" << nextCh << "\n";  // Add escape sequence to buffer.
+    if (ch == 'n' || ch == 't' || ch == '\\'  || ch == '0' || ch == '\'' || ch == '\\' 
+                || ch == 'r' || ch == 'b' || ch == 'f'|| ch == 'a'|| ch == 'v') {
+        buffer << "\nToken type: CHARACTER\n";
+        buffer << "Token: \\" << ch << "\n";  // Add escape sequence to buffer.
     } else {  // Handle invalid escape sequences.
-        std::cerr << "Error: Invalid escape sequence '\\" << nextCh << "\n";
+        std::cerr << "Error: Invalid escape sequence '\\" << ch << "\n";
         exit(1);
     }
+    return; 
 }
 
 // Handle character escape sequences (like '\n').
@@ -314,7 +317,7 @@ void Tokenizer::state11(std::istringstream &inputStream, int &lineCount, std::os
         buffer << "Token: " << ch << "\n";  // Closing quote.
         return;
     } else {  // Handle invalid character literals.
-        std::cerr << "Error: Invalid character literal\n";
+        std::cerr << "Error: Invalid character literal on line " << lineCount;
         exit(1);
     }
 }
@@ -361,7 +364,6 @@ void Tokenizer::state14(std::istringstream &inputStream, int &lineCount, std::os
         std::cerr << "Syntax error on line " <<  lineCount << ": invalid integer\n";
         exit(1);  // Terminate on invalid character after integer.
     }
-
     // If it's a valid token terminator, put the character back into the stream for further processing.
     inputStream.putback(ch);
     return;
