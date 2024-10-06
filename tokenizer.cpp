@@ -252,6 +252,7 @@ void Tokenizer::state7(std::istringstream &inputStream, int &lineCount) {
 
 // Handle escape sequences inside string literals (e.g., '\n', '\t') and character literals 
 void Tokenizer::state8(std::istringstream &inputStream, int &lineCount) {
+
     char ch;
     inputStream.get(ch);  // Get the character after the backslash.
 
