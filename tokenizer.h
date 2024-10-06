@@ -6,12 +6,43 @@
 #include <fstream>
 #include <string>
 #include <filesystem>
+#include <vector>
+
+// The Token class defines the attributes of a Token, including its type, contents, and line number.
+class Token 
+{
+public:
+    std::string tokenType = "";
+    std::string token = "";
+    int lineNumber = 0;
+
+    Token(const std::string& tokenType, const std::string& token, int lineNumber)
+        : tokenType(tokenType), token(token), lineNumber(lineNumber) {}
+
+    // Get the type of the token.
+    std::string getType() const {
+        return tokenType;
+    }
+
+    // Get the value of the token.
+    std::string getValue() const {
+        return token;
+    }
+
+    // Get the line number where the token was found
+    int getLineNumber() const {
+        return lineNumber;
+    }
+};
 
 // The Tokenizer class is responsible for breaking down a stream of input into various tokens,
 // using multiple states to process different types of input, such as numbers, operators, and identifiers.
 class Tokenizer
 {
 private:
+    // Vector to store a list of tokens
+    std::vector<Token> tokenList;
+
     // Variable to track the current line number in the input stream, starting from 1.
     int lineCount = 1;
 
@@ -19,49 +50,49 @@ private:
     // type of token or character in the input stream.
     
     // Main state that branches to other states based on input.
-    void state0(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer);
+    void state0(std::istringstream &inputStream, int &lineCount);
 
     // State to handle string literals (enclosed by double quotes).
-    void state1(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer);
+    void state1(std::istringstream &inputStream, int &lineCount, std::string &strLiteral);
 
     // State to handle the minus sign and potentially negative numbers.
-    void state2(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer);
+    void state2(std::istringstream &inputStream, int &lineCount);
 
     // State to process a sequence of digits, forming integers.
-    void state3(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer);
+    void state3(std::istringstream &inputStream, int &lineCount, std::string &negativeInt);
 
     // State to process identifiers (alphanumeric characters and underscores).
-    void state4(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer);
+    void state4(std::istringstream &inputStream, int &lineCount, std::string &identifier);
 
     // State to handle character literals (enclosed by single quotes).
-    void state5(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer);  
+    void state5(std::istringstream &inputStream, int &lineCount);  
     
     // State to process the '>' (greater than) operator and '>=' (greater than or equal to).
-    void state6(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer);  
+    void state6(std::istringstream &inputStream, int &lineCount);  
     
     // State to process the '<' (less than) operator and '<=' (less than or equal to).
-    void state7(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer);  
+    void state7(std::istringstream &inputStream, int &lineCount);  
     
     // State to process escape sequences in string literals.
-    void state8(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer); 
+    void state8(std::istringstream &inputStream, int &lineCount); 
 
     // State to process escape characters (like '\n') after the backslash in strings.
-    void state9(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer);
+    void state9(std::istringstream &inputStream, int &lineCount);
 
     // State to process boolean AND ('&&') or bitwise AND ('&').
-    void state10(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer);
+    void state10(std::istringstream &inputStream, int &lineCount);
 
     // State to check for the closing single quote in character literals.
-    void state11(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer);
+    void state11(std::istringstream &inputStream, int &lineCount);
 
     // State to process a continuous sequence of digits (integer values).
-    void state12(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer);
+    void state12(std::istringstream &inputStream, int &lineCount, std::string &intLiteral);
 
     // State to process the assignment operator ('=') and equality operator ('==').
-    void state13(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer);
+    void state13(std::istringstream &inputStream, int &lineCount);
 
     // State to validate the termination of integer tokens.
-    void state14(std::istringstream &inputStream, int &lineCount, std::ostringstream &buffer);  
+    void state14(std::istringstream &inputStream, int &lineCount);   
     
 public:
     // Constructor for the Tokenizer class. Initializes an empty object.
@@ -73,7 +104,10 @@ public:
 
     // Begin the tokenization process from the initial state (state0).
     // This method takes the input stream and a buffer to store token output.
-    void begin(std::istringstream &inputStream, std::ostringstream &buffer) { state0(inputStream, lineCount, buffer); }
+    void begin(std::istringstream &inputStream) { state0(inputStream, lineCount); }
+
+    // Function to get the tokens from tokenizer.
+    const std::vector<Token>& getTokens() const { return tokenList; }
 };
 
 #endif // TOKENIZER_H

@@ -8,127 +8,107 @@
 
 // Base state. Branch elsewhere from here.
 // This state processes characters, numbers, and punctuation, directing control to specific states based on input.
-void Tokenizer::state0(std::istringstream &inputStream, int &lineCount, std::ostringstream& buffer) {
+void Tokenizer::state0(std::istringstream &inputStream, int &lineCount) {
     char ch;
-    inputStream.get(ch);  // Get the next character from the input stream.
     
-    if (inputStream.eof()) {  // End of input, stop processing.
-        return;
-    } else if (ch == '\n') {  // Handle newlines by incrementing the line count.
-        lineCount++;
-        return state0(inputStream, lineCount, buffer);
-    } else if (isspace(ch)) {  // Skip all whitespace characters (space, tab, etc.).
-        return state0(inputStream, lineCount, buffer);
-    } else if (ch == '(') {  // Handle left parentheses.
-        buffer << "\nToken type: L_PAREN\n";
-        buffer << "Token: " << ch << "\n";
-        return state0(inputStream, lineCount, buffer);
-    } else if (ch == ')') {  // Handle right parentheses.
-        buffer << "\nToken type: R_PAREN\n";
-        buffer << "Token: " << ch << "\n";
-        return state0(inputStream, lineCount, buffer);
-    } else if (ch == '{') {  // Handle left braces.
-        buffer << "\nToken type: L_BRACE\n";
-        buffer << "Token: " << ch << "\n";
-        return state0(inputStream, lineCount, buffer);
-    } else if (ch == '}') {  // Handle right braces.
-        buffer << "\nToken type: R_BRACE\n";
-        buffer << "Token: " << ch << "\n";
-        return state0(inputStream, lineCount, buffer);
-    } else if (ch == '[') {  // Handle left brackets.
-        buffer << "\nToken type: L_BRACKET\n";
-        buffer << "Token: " << ch << "\n";
-        return state0(inputStream, lineCount, buffer);
-    } else if (ch == ']') {  // Handle right brackets.
-        buffer << "\nToken type: R_BRACKET\n";
-        buffer << "Token: " << ch << "\n";
-        return state0(inputStream, lineCount, buffer);
-    } else if (ch == ';') {  // Handle semicolons.
-        buffer << "\nToken type: SEMICOLON\n";
-        buffer << "Token: " << ch << "\n";
-        return state0(inputStream, lineCount, buffer);
-    } else if (ch == '/') {  // Handle division operator.
-        buffer << "\nToken type: DIVIDE\n";
-        buffer << "Token: " << ch << "\n";
-        return state0(inputStream, lineCount, buffer);
-    } else if (isdigit(ch)) {  // Handle integer literals.
-        inputStream.putback(ch);  // Put character back for further processing.
-        buffer << "\nToken type: INTEGER\n";
-        buffer << "Token: ";
-        state12(inputStream, lineCount, buffer);  // Transition to state12 to process the number.
-        buffer << "\n";
-        return state0(inputStream, lineCount, buffer);    
-    } else if (ch == ',') {  // Handle commas.
-        buffer << "\nToken type: COMMA\n";
-        buffer << "Token: " << ch << "\n";
-        return state0(inputStream, lineCount, buffer);
-    } else if (ch == '=') {  // Handle assignment or equality.
-        state13(inputStream, lineCount, buffer);  // Transition to state13 for further processing.
-        return state0(inputStream, lineCount, buffer);
-    } else if (ch == '+') {  // Handle plus operator.
-        buffer << "\nToken type: PLUS\n";
-        buffer << "Token: " << ch << "\n";
-        return state0(inputStream, lineCount, buffer);
-    } else if (ch == '-') {  // Handle minus sign or negative integers.
-        state2(inputStream, lineCount, buffer);
-        return state0(inputStream, lineCount, buffer);
-    } else if (ch == '>') {  // Handle greater than or greater than or equal to operator.
-        state6(inputStream, lineCount, buffer);
-        return state0(inputStream, lineCount, buffer);
-    } else if (ch == '<') {  // Handle less than or less than or equal to operator.
-        state7(inputStream, lineCount, buffer);
-        return state0(inputStream, lineCount, buffer);
-    } else if (ch == '*') {  // Handle asterisk operator.
-        buffer << "\nToken type: ASTERISK\n";
-        buffer << "Token: " << ch << "\n";
-        return state0(inputStream, lineCount, buffer);
-    } else if (ch == '%') {  // Handle modulo operator.
-        buffer << "\nToken type: MODULO\n";
-        buffer << "Token: " << ch << "\n";
-        return state0(inputStream, lineCount, buffer);
-    } else if (ch == '\\') {  // Handle backslash character.
-        buffer << "\nToken type: BACKSLASH\n";
-        buffer << "Token: " << ch << "\n";
-        return state0(inputStream, lineCount, buffer);
-    } else if (ch == '&') {  // Handle boolean AND or bitwise AND.
-        state10(inputStream, lineCount, buffer);
-        return state0(inputStream, lineCount, buffer);
-    } else if (ch == '"') {  // Handle double quotes (beginning of a string literal).
-        buffer << "\nToken type: DOUBLE_QUOTE\n";
-        buffer << "Token: " << ch << "\n";
-        buffer << "\nToken type: STRING\n";
-        buffer << "Token: ";
-        state1(inputStream, lineCount, buffer);  // Transition to state1 to handle the string.
-        return state0(inputStream, lineCount, buffer);
-    } else if (ch == '\'') {  // Handle single quotes (character literals).
-        buffer << "\nToken type: SINGLE_QUOTE\n";
-        buffer << "Token: " << ch << "\n";
-        state5(inputStream, lineCount, buffer);  // Transition to state5 for single quotes.
-        return state0(inputStream, lineCount, buffer);
-    } else if (ch == '_') {  // Handle underscores.
-        buffer << "\nToken type: UNDERSCORE\n";
-        buffer << "Token: " << ch << "\n";
-        return state0(inputStream, lineCount, buffer);
-    } else if (isalpha(ch) || ch == '_') {  // Handle identifiers (letters or underscores).
-        buffer << "\nToken type: IDENTIFIER\n";
-        buffer << "Token: " << ch;
-        state4(inputStream, lineCount, buffer);  // Transition to state4 to process the identifier.
-        return state0(inputStream, lineCount, buffer);
-     } else if (isdigit(ch)) {  // Handle digits (numbers).
-        buffer << "\nToken type: INTEGER\n";
-        buffer << "Token: " << ch;
-        state3(inputStream, lineCount, buffer);  // Transition to state3 for further processing.
-        buffer << "\n";
-        return state0(inputStream, lineCount, buffer);
-     } 
-    
-    // If an unrecognized token is encountered, output an error message and terminate.
-    std::cerr << "Unrecognized token: '" << ch << "' at line " << lineCount << " - Terminating...\n";
-    exit(1);
+    while (true) {
+        inputStream.get(ch);  // Get the next character from the input stream.
+        
+        if (inputStream.eof()) {  // End of input, stop processing.
+            return;
+        } else if (ch == '\n') {  // Handle newlines by incrementing the line count.
+            lineCount++;
+        } else if (isspace(ch)) {  // Skip all whitespace characters (space, tab, etc.).
+            continue;
+        } else if (ch == '(') {  // Handle left parentheses.
+            Token token("L_PAREN", std::string(1, ch), lineCount);
+            tokenList.push_back(token);
+        } else if (ch == ')') {  // Handle right parentheses.
+            Token token("R_PAREN", std::string(1, ch), lineCount);
+            tokenList.push_back(token);
+        } else if (ch == '{') {  // Handle left braces.
+            Token token("L_BRACE", std::string(1, ch), lineCount);
+            tokenList.push_back(token);
+        } else if (ch == '}') {  // Handle right braces.
+            Token token("R_BRACE", std::string(1, ch), lineCount);
+            tokenList.push_back(token);
+        } else if (ch == '[') {  // Handle left brackets.
+            Token token("L_BRACKET", std::string(1, ch), lineCount);
+            tokenList.push_back(token);
+        } else if (ch == ']') {  // Handle right brackets.
+            Token token("R_BRACKET", std::string(1, ch), lineCount);
+            tokenList.push_back(token);
+        } else if (ch == ';') {  // Handle semicolons.
+            Token token("SEMICOLON", std::string(1, ch), lineCount);
+            tokenList.push_back(token);
+        } else if (ch == '/') {  // Handle division operator.
+            Token token("DIVIDE", std::string(1, ch), lineCount);
+            tokenList.push_back(token);
+        } else if (isdigit(ch)) {  // Handle integer literals.
+            inputStream.putback(ch);  // Put character back for further processing.
+            
+            std::string intLiteral;
+            state12(inputStream, lineCount, intLiteral);  // Transition to state12 to process the number.
+
+            Token token("INTEGER", intLiteral, lineCount);
+            tokenList.push_back(token);
+        } else if (ch == ',') {  // Handle commas.
+            Token token("COMMA", std::string(1, ch), lineCount);
+            tokenList.push_back(token);
+        } else if (ch == '=') {  // Handle assignment or equality.
+            state13(inputStream, lineCount);  // Transition to state13 for further processing.
+        } else if (ch == '+') {  // Handle plus operator.
+            Token token("PLUS", std::string(1, ch), lineCount);
+            tokenList.push_back(token);
+        } else if (ch == '-') {  // Handle minus sign or negative integers.
+            state2(inputStream, lineCount);
+        } else if (ch == '>') {  // Handle greater than or greater than or equal to operator.
+            state6(inputStream, lineCount);
+        } else if (ch == '<') {  // Handle less than or less than or equal to operator.
+            state7(inputStream, lineCount);
+        } else if (ch == '*') {  // Handle asterisk operator.
+            Token token("ASTERISK", std::string(1, ch), lineCount);
+            tokenList.push_back(token);
+        } else if (ch == '%') {  // Handle modulo operator.
+            Token token("MODULO", std::string(1, ch), lineCount);
+            tokenList.push_back(token);
+        } else if (ch == '\\') {  // Handle backslash character.
+            Token token("BACKSLASH", std::string(1, ch), lineCount);
+            tokenList.push_back(token);
+        } else if (ch == '&') {  // Handle boolean AND or bitwise AND.
+            state10(inputStream, lineCount);
+        } else if (ch == '"') {  // Handle double quotes (beginning of a string literal).
+            Token token = Token("DOUBLE_QUOTE", std::string(1, ch), lineCount);
+            tokenList.push_back(token);
+            std::string strLiteral;
+            state1(inputStream, lineCount, strLiteral);  // Transition to state1 to handle the string.
+        } else if (ch == '\'') {  // Handle single quotes (character literals).
+            Token token("SINGLE_QUOTE", std::string(1, ch), lineCount);
+            tokenList.push_back(token);
+            state5(inputStream, lineCount);  // Transition to state5 for single quotes.
+        } else if (ch == '_') {  // Handle underscores.
+            Token token("UNDERSCORE", std::string(1, ch), lineCount);
+            tokenList.push_back(token);
+        } else if (isalpha(ch) || ch == '_') {  // Handle identifiers (letters or underscores).
+            std::string identifier(1, ch);
+
+            while (inputStream.get(ch) && (isalnum(ch) || ch == '_')){
+                identifier += ch;
+            }
+            inputStream.putback(ch);
+
+            Token token("IDENTIFIER", identifier, lineCount);
+            tokenList.push_back(token);
+        } else {
+            // If an unrecognized token is encountered, output an error message and terminate.
+            std::cerr << "Unrecognized token: '" << ch << "' at line " << lineCount << " - Terminating...\n";
+            exit(1);
+        }
+    }
 }
 
 // Handle string literals enclosed by double quotes
-void Tokenizer::state1(std::istringstream &inputStream, int &lineCount, std::ostringstream& buffer) {
+void Tokenizer::state1(std::istringstream &inputStream, int &lineCount, std::string &strLiteral) {
     char ch;
     inputStream.get(ch);
     
@@ -136,25 +116,24 @@ void Tokenizer::state1(std::istringstream &inputStream, int &lineCount, std::ost
         std::cerr << "Error: Unterminated string\n";
         exit(1);
     } else if (ch == '"') {  // End of the string literal.
-        buffer << "\n";
-        buffer << "\nToken type: DOUBLE_QUOTE\n";
-        buffer << "Token: " << ch << "\n";
+        Token token = Token("STRING", strLiteral, lineCount);
+        tokenList.push_back(token);
+
+        Token closingToken("DOUBLE_QUOTE", std::string(1, ch), lineCount);
+        tokenList.push_back(closingToken);
         return;
-    } else if (ch == '\\') {  // Handle escape characters inside the string.
-        buffer << ch;  // Add the backslash to the buffer.
-        state9(inputStream, lineCount, buffer);  // Transition to state9 to handle the escape sequence.
     } else if (ch == '\n') {  // Handle newlines within the string (error).
         lineCount++;
         std::cerr << "Error: Unterminated string on line " << lineCount << "\n";
         exit(1);
     } else {  // Add characters to the buffer as part of the string.
-        buffer << ch;
+        strLiteral += ch;
     }
-    state1(inputStream, lineCount, buffer);  // Continue processing the string.
+    state1(inputStream, lineCount, strLiteral);  // Continue processing the string.
 }
 
 // Check if - is part of a number or just a minus sign.
-void Tokenizer::state2(std::istringstream &inputStream, int &lineCount, std::ostringstream& buffer) {
+void Tokenizer::state2(std::istringstream &inputStream, int &lineCount) {
     char ch;
     inputStream.get(ch);  // Get the next character.
 
@@ -164,121 +143,132 @@ void Tokenizer::state2(std::istringstream &inputStream, int &lineCount, std::ost
     } else if (ch == '\n') {  // Handle newline, increment line count.
         lineCount++;
     } else if (isdigit(ch)) {  // Handle negative numbers.
-        buffer << "\nToken type: INTEGER\n";
-        buffer << "Token: -" << ch;
-        return state3(inputStream, lineCount, buffer);  // Transition to state3 for further number processing.
+        std::string negativeInt = "-" + std::string(1,ch);
+        std::cout << "moving to state 3 from state 2, negativeInt is: " << negativeInt << "\n";
+        state3(inputStream, lineCount, negativeInt);  // Transition to state3 for further number processing.
+        return;
     } else {
         inputStream.putback(ch);  // If it's not part of a number, put the character back.
     }
-    buffer << "\nToken type: MINUS\n";
-    buffer << "Token: -" << "\n";
+    Token token("MINUS", "-", lineCount);
+    tokenList.push_back(token);
     return;
 }
 
 // Process integer tokens.
-void Tokenizer::state3(std::istringstream &inputStream, int &lineCount, std::ostringstream& buffer) {
+void Tokenizer::state3(std::istringstream &inputStream, int &lineCount, std::string &negativeInt) {
     char ch;
     inputStream.get(ch);  // Get the next character.
     
-    if (inputStream.eof()) {  // End of file, handle error for unterminated integer.
-        std::cerr << "Error: Unterminated integer\n";
-        exit(1);
-    } else if (!isdigit(ch)) {  // If not a digit, stop processing the integer.
-        buffer << "\n";
-        inputStream.putback(ch);  // Put the non-integer character back.
-        return state0(inputStream, lineCount, buffer);  // Return to state0.
+    if (isdigit(ch)) {  // Keep accumulating digits.
+        negativeInt += ch;
+        state3(inputStream, lineCount, negativeInt);  // Continue processing.
+        return;
+    } else {  // Case when a non-digit is read.
+        inputStream.putback(ch);  // Put back the non-digit character.
+
+        // Add the complete negative integer to the token list.
+        Token token("INTEGER", negativeInt, lineCount);
+        tokenList.push_back(token);
+
+        return;  // Return to the previous state
     }
-    buffer << ch;  // Add digit to the buffer.
-    state3(inputStream, lineCount, buffer);  // Recursively continue processing digits.
 }
 
 // Process identifier tokens (letters and underscores).
-void Tokenizer::state4(std::istringstream &inputStream, int &lineCount, std::ostringstream& buffer) {
+void Tokenizer::state4(std::istringstream &inputStream, int &lineCount, std::string &identifier) {
     char ch;
-    inputStream.get(ch);  // Get the next character.
 
-    if (inputStream.eof()) {  // End of file, handle error for unterminated identifier.
-        std::cerr << "Error: Unterminated identifier\n";
-        exit(1);
-    } else if (!isalnum(ch) && ch != '_') {  // If it's not a valid identifier character, stop.
-        inputStream.putback(ch);  // Put the character back.
-        buffer << "\n";
-        return;
-    }
-    buffer << ch;  // Add character to the identifier token.
-    return state4(inputStream, lineCount, buffer);  // Continue processing the identifier.
+    while (true) {
+        inputStream.get(ch);  // Get the next character.
+
+        if (inputStream.eof()) {  // End of file, handle error for unterminated identifier.
+            std::cerr << "Error: Unterminated identifier\n";
+            exit(1);
+        } else if (!isalnum(ch) && ch != '_') {  // If it's not a valid identifier character, stop.
+            inputStream.putback(ch);  // Put the character back.
+            break;
+        }
+
+        identifier += ch;  // Add character to the identifier token.
+        }
 }
 
-// Handle character literals enclosed by single quotes.
-void Tokenizer::state5(std::istringstream &inputStream, int &lineCount, std::ostringstream& buffer) {
+// Handle characters enclosed by single quotes.
+void Tokenizer::state5(std::istringstream &inputStream, int &lineCount) {
     char ch;
     inputStream.get(ch);  // Get the next character.
 
     if (inputStream.eof()) {  // End of file, error for unterminated character literal.
-        std::cerr << "Error: Unterminated character literal\n";
+        std::cerr << "Error: Unterminated character literal on line" << lineCount;
         exit(1);
     } else if (ch == '\'') {  // Empty character literal, handle it.
-        buffer << "\nToken type: SINGLE_QUOTE\n";
-        buffer << "Token: ''\n";  // Empty literal.
+        Token token("SINGLE_QUOTE", std::string(1, ch), lineCount);
+        tokenList.push_back(token);
         return;
     } else if (ch == '\\') {  // Escape character inside the literal.
-        state8(inputStream, lineCount, buffer);  // Handle escape sequences.
-    } else {  // Handle regular character literals.
-        buffer << "\nToken type: STRING\n";
-        buffer << "Token: " << ch << "\n";
+        inputStream.get(ch); // Found backslash so need to get escaped character as well
+        Token token("CHARACTER", std::string(1, ch), lineCount);
+        tokenList.push_back(token);
+    } else {  // Handle regular single length character literals.
+        Token token("CHARACTER", std::string(1, ch), lineCount);
+        tokenList.push_back(token);
+
     }
-    state11(inputStream, lineCount, buffer);  // Check for the closing single quote.
+    state11(inputStream, lineCount);  // Check for the closing single quote.
 }
 
 // Process greater-than operator and greater-than-or-equal-to operator.
-void Tokenizer::state6(std::istringstream &inputStream, int &lineCount, std::ostringstream& buffer) {
+void Tokenizer::state6(std::istringstream &inputStream, int &lineCount) {
     char ch;
     inputStream.get(ch);  // Get the next character.
 
     if (ch == '=') {  // Handle '>=' (greater than or equal to).
-        buffer << "\nToken type: GT_EQUAL\n";
-        buffer << "Token: >=\n";
+        Token token("GT_EQUAL", std::string(1, ch), lineCount);
+        tokenList.push_back(token);
     } else {  // Handle '>' (greater than).
         inputStream.putback(ch);  // Put character back if not '='.
-        buffer << "\nToken type: GT\n";
-        buffer << "Token: >\n";
+        Token token("GT", ">", lineCount);
+        tokenList.push_back(token);
     }
     return;
 }
 
 // Process less-than operator and less-than-or-equal-to operator.
-void Tokenizer::state7(std::istringstream &inputStream, int &lineCount, std::ostringstream& buffer) {
+void Tokenizer::state7(std::istringstream &inputStream, int &lineCount) {
     char ch;
     inputStream.get(ch);  // Get the next character.
 
     if (ch == '=') {  // Handle '<=' (less than or equal to).
-        buffer << "\nToken type: LT_EQUAL\n";
-        buffer << "Token: <=\n";
+        Token token("LT_EQUAL", std::string(1, ch), lineCount);
+        tokenList.push_back(token);
     } else {  // Handle '<' (less than).
         inputStream.putback(ch);  // Put character back if not '='.
-        buffer << "\nToken type: LT\n";
-        buffer << "Token: <\n";
+        Token token("LT", "<", lineCount);
+        tokenList.push_back(token);
     }
     return;
 }
 
-// Handle escape sequences inside string literals (e.g., '\n', '\t').
-void Tokenizer::state8(std::istringstream &inputStream, int &lineCount, std::ostringstream& buffer) {
-    char nextCh;
-    inputStream.get(nextCh);  // Get the character after the backslash.
+// Handle escape sequences inside string literals (e.g., '\n', '\t') and character literals 
+void Tokenizer::state8(std::istringstream &inputStream, int &lineCount) {
+    char ch;
+    inputStream.get(ch);  // Get the character after the backslash.
 
     // Handle valid escape characters like '\n', '\t', etc.
-    if (nextCh == 'n' || nextCh == 't' || nextCh == '\\'  || nextCh == '0') {
-        buffer << "\nToken type: STRING\n";
-        buffer << "Token: \\" << nextCh << "\n";  // Add escape sequence to buffer.
+    if (ch == 'n' || ch == 't' || ch == '\\'  || ch == '0' || ch == '\'' || ch == '\\' 
+                || ch == 'r' || ch == 'b' || ch == 'f'|| ch == 'a'|| ch == 'v') {
+        Token token("CHARACTER", std::string(1, ch), lineCount);
+        tokenList.push_back(token);
     } else {  // Handle invalid escape sequences.
-        std::cerr << "Error: Invalid escape sequence '\\" << nextCh << "\n";
+        std::cerr << "Error: Invalid escape sequence '\\" << ch << "\n";
         exit(1);
     }
+    return; 
 }
 
 // Handle character escape sequences (like '\n').
-void Tokenizer::state9(std::istringstream &inputStream, int &lineCount, std::ostringstream& buffer) {
+/*void Tokenizer::state9(std::istringstream &inputStream, int &lineCount, std::ostringstream& buffer) {
     char ch;
     inputStream.get(ch);  // Get the character after the backslash.
 
@@ -287,72 +277,72 @@ void Tokenizer::state9(std::istringstream &inputStream, int &lineCount, std::ost
     } else {
         buffer << ch;  // Handle other escape characters.
     }
-}
+}*/
 
 // Handle boolean AND (&&) and bitwise AND (&).
-void Tokenizer::state10(std::istringstream &inputStream, int &lineCount, std::ostringstream& buffer) {
+void Tokenizer::state10(std::istringstream &inputStream, int &lineCount) {
     char ch;
     inputStream.get(ch);  // Get the next character.
 
     if (ch == '&') {  // Handle boolean AND (&&).
-        buffer << "\nToken type: BOOLEAN_AND\n";
-        buffer << "Token: &&\n";
+        Token token("BOOLEAN_AND", std::string(1, ch), lineCount);
+        tokenList.push_back(token);
     } else {  // Handle bitwise AND (&).
         inputStream.putback(ch);  // Put character back if not another '&'.
-        buffer << "\nToken type: AMPERSAND\n";
-        buffer << "Token: &\n";
+        Token token("AMPERSAND", std::string(1, ch), lineCount);
+        tokenList.push_back(token);
     }
 }
 
 // Check for the closing single quote for character literals.
-void Tokenizer::state11(std::istringstream &inputStream, int &lineCount, std::ostringstream& buffer) {
+void Tokenizer::state11(std::istringstream &inputStream, int &lineCount) {
     char ch;
     inputStream.get(ch);  // Get the next character.
 
     if (ch == '\'') {  // Handle closing single quote.
-        buffer << "\nToken type: SINGLE_QUOTE\n";
-        buffer << "Token: " << ch << "\n";  // Closing quote.
+        Token token("SINGLE_QUOTE", std::string(1, ch), lineCount);
+        tokenList.push_back(token);
         return;
     } else {  // Handle invalid character literals.
-        std::cerr << "Error: Invalid character literal\n";
+        std::cerr << "Error: Invalid character literal on line " << lineCount;
         exit(1);
     }
 }
 
 // Process sequences of digits (integer values).
-void Tokenizer::state12(std::istringstream &inputStream, int &lineCount, std::ostringstream& buffer) {
+void Tokenizer::state12(std::istringstream &inputStream, int &lineCount, std::string &intLiteral) {
     char ch;
     inputStream.get(ch);  // Get the next character.
 
     // Keep reading digits until a non-digit character is found.
     if (!isdigit(ch)) {
         inputStream.putback(ch);  // Put back the non-digit character.
-        state14(inputStream, lineCount, buffer);  // Transition to state14 to validate.
+        state14(inputStream, lineCount);  // Transition to state14 to validate.
         return;
     }
-    buffer << ch;  // Add digit to the buffer.
-    state12(inputStream, lineCount, buffer);  // Continue processing digits.
-    return;
+    intLiteral += ch;
+    state12(inputStream, lineCount, intLiteral);  // Continue processing digits.
 }
 
 // Process assignment '=' and equality '=='.
-void Tokenizer::state13(std::istringstream &inputStream, int &lineCount, std::ostringstream& buffer) {
+void Tokenizer::state13(std::istringstream &inputStream, int &lineCount) {
     char ch;
     inputStream.get(ch);  // Get the next character.
 
     if (ch == '=') {  // Handle equality '=='.
-        buffer << "\nToken type: BOOLEAN_EQUAL\n";
-        buffer << "Token: ==\n";
+        Token token("BOOLEAN_EQUAL", "==", lineCount);
+        tokenList.push_back(token);
     } else {  // Handle assignment '='.
         inputStream.putback(ch);  // Put back the character if it's not another '='.
-        buffer << "\nToken type: ASSIGNMENT_OPERATOR\n";
-        buffer << "Token: =\n";
+        Token token("ASSIGNMENT_OPERATOR", "=", lineCount);
+        tokenList.push_back(token); 
+        
     }
     return;
 }
 
 // Check and validate the termination of integer tokens.
-void Tokenizer::state14(std::istringstream &inputStream, int &lineCount, std::ostringstream& buffer) {
+void Tokenizer::state14(std::istringstream &inputStream, int &lineCount) {
     char ch;
     inputStream.get(ch);  // Get the next character.
 
@@ -361,9 +351,7 @@ void Tokenizer::state14(std::istringstream &inputStream, int &lineCount, std::os
         std::cerr << "Syntax error on line " <<  lineCount << ": invalid integer\n";
         exit(1);  // Terminate on invalid character after integer.
     }
-
     // If it's a valid token terminator, put the character back into the stream for further processing.
     inputStream.putback(ch);
-    return;
 }
 
