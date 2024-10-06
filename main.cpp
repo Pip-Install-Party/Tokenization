@@ -76,7 +76,6 @@ int main() {
         std::cerr << "Inavlid file selection... Exiting...";
         exit(1);
     }
-
     CommentDFA *removeComments = new CommentDFA();
     // Start in state0 to process the file
     removeComments->begin(file, buffer);
@@ -90,13 +89,23 @@ int main() {
         std::string str = buffer.str();
         str.erase(str.find_last_not_of(" \n\r\t")+1);  // Remove trailing whitespace or newlines
         std::istringstream inputStream(str);
+        
         Tokenizer *tokenizer = new Tokenizer();
-        buffer.str("");  // Clears the current content of the buffer
-        buffer.clear();  // Resets any error flags
-        tokenizer->begin(inputStream, buffer);
-        std::cout << "Assignment 2\n";
-        std::cout  << "\nResulting File:" << std::endl;
-        std::cout << buffer.str();
+
+        tokenizer->begin(inputStream);
+
+        std::vector<Token> tokenList = tokenizer->getTokens();
+
+        std::cout << "Token List\n";
+
+        for (int i = 0; i < tokenList.size(); i++){
+            std::cout << "Token type: " << tokenList[i].tokenType << '\n';
+            std::cout << "Token: " << tokenList[i].token << "   Line Number: " << tokenList[i].lineNumber << '\n';
+            std::cout << "\n";
+        }
+    }
+    else if(assignment_num == 3) {
+        std::cout << "Assignment 3, not implemented yet\n";
     }
     else {
         std::cout << "No matching assignments exist for " << assignment_num << ".\n";
