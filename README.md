@@ -1,10 +1,10 @@
-# Component 3 - Recursive Descent Parser
+# Component 2 - Tokenization
 
-This program will use a series of deterministic finite state automata (DFAs) to remove comments from input file(s), tokenize the contents, and concrete syntax tree (CST) using a recursive descent parsing technique.
+This program will identify and remove C-style comments from an input test file using a deterministic finite state automoton (DFA) before using another DFA to convert the input file into a series of tokens.
 
 Authored by: [Blake Marshall](https://github.com/officialblake), [Brandon Robinson](https://github.com/brandonuscg), [Holden Ea](https://github.com/holdenkea), [Rolando Yax](https://github.com/Ryax3), and [Jacob Sellers](https://github.com/JacobS999).
 
-## Running the program
+## Running the program: 
 
 This project can be run via make.
 
