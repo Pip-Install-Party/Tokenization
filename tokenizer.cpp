@@ -340,3 +340,4 @@ void Tokenizer::state14(std::istringstream &inputStream, int &lineCount) {
     // If it's a valid token terminator, put the character back into the stream for further processing.
     inputStream.putback(ch);
 }
+
